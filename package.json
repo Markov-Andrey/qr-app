@@ -13,8 +13,8 @@
         "eslint-plugin-vue": "^9.31.0"
     },
     "dependencies": {
+        "buefy": "npm:@ntohq/buefy-next@^0.1.4",
         "nuxt": "^3.14.159",
-        "nuxt-buefy": "^0.4.29",
         "vue": "^3.5.13",
         "vue-router": "^4.4.5"
     }
