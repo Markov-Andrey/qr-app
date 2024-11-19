@@ -24,7 +24,7 @@
         "../node_modules/@unhead/vue"
       ],
       "@nuxt/devtools": [
-        "../node_modules/@nuxt/devtools"
+        "../node_modules/nuxt/node_modules/@nuxt/devtools"
       ],
       "@vue/runtime-core": [
         "../node_modules/@vue/runtime-core"
@@ -80,6 +80,9 @@
       "#build": [
         "."
       ],
+      "#build/*": [
+        "./*"
+      ],
       "#app": [
         "../node_modules/nuxt/dist/app"
       ],
@@ -134,18 +137,18 @@
     "./nuxt.d.ts",
     "../.config/nuxt.*",
     "../**/*",
-    "../node_modules/@nuxt/devtools/runtime",
-    "../node_modules/@nuxt/devtools/dist/runtime",
+    "../node_modules/nuxt/node_modules/@nuxt/devtools/runtime",
+    "../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime",
     "../node_modules/@nuxt/telemetry/runtime",
     "../node_modules/@nuxt/telemetry/dist/runtime",
     ".."
   ],
   "exclude": [
-    "../dist",
+    ".",
     "../node_modules",
     "../node_modules/nuxt/node_modules",
-    "../node_modules/@nuxt/devtools/runtime/server",
-    "../node_modules/@nuxt/devtools/dist/runtime/server",
+    "../node_modules/nuxt/node_modules/@nuxt/devtools/runtime/server",
+    "../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/server",
     "../node_modules/@nuxt/telemetry/runtime/server",
     "../node_modules/@nuxt/telemetry/dist/runtime/server",
     "../.output"

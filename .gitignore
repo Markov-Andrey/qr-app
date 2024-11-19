@@ -6,7 +6,6 @@
 /storage/*.key
 /vendor
 .nuxt
-.output
 .env
 .env.backup
 .env.production

@@ -172,7 +172,7 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _HnbgKuMQMd = (function(nitro) {
+const _lStWqzBxFF = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
@@ -267,7 +267,7 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _HnbgKuMQMd,
+  _lStWqzBxFF,
 _kWvNZNgb6r
 ];
 
@@ -292,8 +292,8 @@ storage.mount('/assets', assets);
 
 storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:\\Program Files\\OSPanel\\domains\\qr-app","ignore":["**/node_modules/**","**/.git/**"]}));
 storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:\\Program Files\\OSPanel\\domains\\qr-app\\server","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:\\Program Files\\OSPanel\\domains\\qr-app\\my-custom-dir","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:\\Program Files\\OSPanel\\domains\\qr-app\\my-custom-dir\\cache","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:\\Program Files\\OSPanel\\domains\\qr-app\\dist","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:\\Program Files\\OSPanel\\domains\\qr-app\\dist\\cache","ignore":["**/node_modules/**","**/.git/**"]}));
 storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"C:\\Program Files\\OSPanel\\domains\\qr-app\\.data\\kv","ignore":["**/node_modules/**","**/.git/**"]}));
 
 function useStorage(base = "") {
@@ -1161,8 +1161,8 @@ function publicAssetsURL(...path) {
 
 globalThis.__buildAssetsURL = buildAssetsURL;
 globalThis.__publicAssetsURL = publicAssetsURL;
-const getClientManifest = () => import('file://C:/Program%20Files/OSPanel/domains/qr-app/my-custom-dir/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
-const getServerEntry = () => import('file://C:/Program%20Files/OSPanel/domains/qr-app/my-custom-dir/dist/server/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('file://C:/Program%20Files/OSPanel/domains/qr-app/dist/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getServerEntry = () => import('file://C:/Program%20Files/OSPanel/domains/qr-app/dist/dist/server/server.mjs').then((r) => r.default || r);
 const getSSRStyles = lazyCachedFunction(() => Promise.resolve().then(function () { return styles$1; }).then((r) => r.default || r));
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
