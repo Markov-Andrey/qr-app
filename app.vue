@@ -1,10 +1,14 @@
 <template>
-    <div id="app">
-        <NuxtPage />
-    </div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@5.8.55/css/materialdesignicons.min.css">
+    <NuxtLayout>
+        <v-app>
+            <NuxtPage />
+        </v-app>
+    </NuxtLayout>
 </template>
+
 <script setup>
+import { useNuxtApp } from '#app';
+useNuxtApp();
 </script>
 
 <style>

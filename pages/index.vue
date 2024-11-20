@@ -1,33 +1,89 @@
 <template>
-    <div>hello</div>
-    <b-button type="is-success is-light">Success Light</b-button>
-    <b-carousel>
-        <b-carousel-item v-for="(carousel, i) in carousels" :key="i">
-            <section :class="`hero is-medium is-${carousel.color}`">
-                <div class="hero-body has-text-centered">
-                    <h1 class="title">{{carousel.text}}</h1>
-                </div>
-            </section>
-        </b-carousel-item>
-    </b-carousel>
+    <div class="flex items-center justify-center w-full h-screen">
+        <v-card class="p-6 w-full max-w-md">
+            <v-card-title class="text-center text-lg font-semibold">Login</v-card-title>
+
+            <v-card-text>
+                <v-form ref="form" v-model="valid" lazy-validation>
+                    <!-- Email Field -->
+                    <v-text-field
+                        v-model="email"
+                        label="Email"
+                        type="email"
+                        :rules="emailRules"
+                        required
+                        outlined
+                        class="w-full mb-4"
+                    />
+
+                    <!-- Password Field -->
+                    <v-text-field
+                        v-model="password"
+                        label="Password"
+                        type="password"
+                        :rules="passwordRules"
+                        required
+                        outlined
+                        class="w-full mb-4"
+                    />
+
+                    <!-- Error Message -->
+                    <v-alert
+                        v-if="errorMessage"
+                        type="error"
+                        class="mt-2"
+                        dense
+                    >
+                        {{ errorMessage }}
+                    </v-alert>
+                </v-form>
+            </v-card-text>
+
+            <v-card-actions>
+                <v-spacer />
+                <!-- Submit Button -->
+                <v-btn
+                    :disabled="!valid"
+                    color="primary"
+                    @click="submit"
+                >
+                    Login
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </div>
 </template>
 
 <script>
 export default {
-    data(){
+    data() {
         return {
-            carousels: [
-                { text: 'Slide 1', color: 'primary' },
-                { text: 'Slide 2', color: 'info' },
-                { text: 'Slide 3', color: 'success' },
-                { text: 'Slide 4', color: 'warning' },
-                { text: 'Slide 5', color: 'danger' }
-            ]
-        }
-    }
-}
+            email: '',
+            password: '',
+            valid: false,
+            errorMessage: '',
+            emailRules: [
+                (v) => !!v || 'Email is required',
+                (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+            ],
+            passwordRules: [
+                (v) => !!v || 'Password is required',
+                (v) => v.length >= 3 || 'Password must be at least 3 characters long',
+            ],
+        };
+    },
+    methods: {
+        submit() {
+            if (this.email === 'admin@example.com' && this.password === 'password') {
+                alert('Login Successful!');
+                this.errorMessage = '';
+            } else {
+                this.errorMessage = 'Invalid email or password';
+            }
+        },
+    },
+};
 </script>
 
 <style scoped>
-
 </style>

@@ -8,13 +8,20 @@
     },
     "devDependencies": {
         "@nuxt/types": "^2.18.1",
+        "autoprefixer": "^10.4.20",
         "axios": "^1.6.4",
         "eslint": "^9.15.0",
-        "eslint-plugin-vue": "^9.31.0"
+        "eslint-plugin-vue": "^9.31.0",
+        "nuxt": "^3.14.159",
+        "postcss": "^8.4.49",
+        "tailwindcss": "^3.4.15",
+        "vite-plugin-vuetify": "^2.0.4",
+        "vuetify": "^3.7.4"
     },
     "dependencies": {
-        "buefy": "npm:@ntohq/buefy-next@^0.1.4",
+        "@mdi/font": "^7.4.47",
         "nuxt": "^3.14.159",
+        "sass": "^1.51.0",
         "vue": "^3.5.13",
         "vue-router": "^4.4.5"
     }

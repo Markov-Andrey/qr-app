@@ -19,7 +19,7 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/plugins/devtools.client.js")> &
   InjectionType<typeof import("../../node_modules/nuxt/dist/app/plugins/dev-server-logs.js")> &
   InjectionType<typeof import("../../node_modules/nuxt/dist/app/plugins/check-if-layout-used.js")> &
-  InjectionType<typeof import("../../plugins/buefy.js")>
+  InjectionType<typeof import("../../plugins/vuetify.js")>
 
 declare module '#app' {
   interface NuxtApp extends NuxtAppInjections { }
