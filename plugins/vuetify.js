@@ -7,6 +7,13 @@ export default defineNuxtPlugin((nuxtApp) => {
     const vuetify = createVuetify({
         components,
         directives,
+        defaults: {
+            global: {
+                font: {
+                    family: 'Lato',
+                },
+            },
+        },
     });
 
     nuxtApp.vueApp.use(vuetify);

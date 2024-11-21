@@ -180,7 +180,7 @@ const _lStWqzBxFF = (function(nitro) {
 
 const rootDir = "C:/Program Files/OSPanel/domains/qr-app";
 
-const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
+const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[{"rel":"stylesheet","href":"https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"}],"style":[],"script":[],"noscript":[]};
 
 const appRootTag = "div";
 

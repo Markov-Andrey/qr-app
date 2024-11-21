@@ -8,6 +8,16 @@ export default defineNuxtConfig({
             autoprefixer: {},
         },
     },
+    app: {
+        head: {
+            link: [
+                {
+                    rel: 'stylesheet',
+                    href: 'https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'
+                }
+            ]
+        }
+    },
     vite: {
         server: {
             proxy: {
@@ -15,7 +25,7 @@ export default defineNuxtConfig({
             },
         },
         ssr: {
-            noExternal: ['vuetify'], // Добавьте для работы SSR
+            noExternal: ['vuetify'],
         },
     },
     css: [
@@ -24,6 +34,6 @@ export default defineNuxtConfig({
     ],
 
     build: {
-        transpile: ['vuetify'], // Добавьте для обработки Vuetify на этапе сборки
+        transpile: ['vuetify'],
     },
 });
