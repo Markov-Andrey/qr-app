@@ -5,7 +5,7 @@
             hover:shadow-[0_5px_0_0_#10b981]
             transition-all duration-300 ease-in-out"
         >
-            <v-card-title class="text-center text-lg font-black">Login</v-card-title>
+            <v-card-title class="text-center text-h6 text-md-h5 text-lg-h4">Login</v-card-title>
 
             <v-card-text>
                 <v-form ref="form" v-model="valid" lazy-validation>
