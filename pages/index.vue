@@ -1,11 +1,10 @@
 <template>
     <div class="flex items-center justify-center w-full h-screen">
         <v-card class="p-6 w-full max-w-md">
-            <v-card-title class="text-center text-lg font-semibold">Login</v-card-title>
+            <v-card-title class="text-center text-lg font-bold">Login</v-card-title>
 
             <v-card-text>
                 <v-form ref="form" v-model="valid" lazy-validation>
-                    <!-- Email Field -->
                     <v-text-field
                         v-model="email"
                         label="Email"
@@ -16,7 +15,6 @@
                         class="w-full mb-4"
                     />
 
-                    <!-- Password Field -->
                     <v-text-field
                         v-model="password"
                         label="Password"
@@ -27,7 +25,6 @@
                         class="w-full mb-4"
                     />
 
-                    <!-- Error Message -->
                     <v-alert
                         v-if="errorMessage"
                         type="error"
@@ -41,10 +38,10 @@
 
             <v-card-actions>
                 <v-spacer />
-                <!-- Submit Button -->
                 <v-btn
                     :disabled="!valid"
                     color="primary"
+                    variant="tonal"
                     @click="submit"
                 >
                     Login
