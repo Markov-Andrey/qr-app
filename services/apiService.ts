@@ -10,6 +10,9 @@ class ApiService {
     async login(data: Record<string, any>) {
         return request(() => api().post(`/login`, data));
     }
+    async menuItems() {
+        return request(() => api().get(`/menu-items`));
+    }
 }
 
 export const apiService = new ApiService();
