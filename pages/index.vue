@@ -1,9 +1,9 @@
 <template>
     <div class="flex items-center justify-center w-full h-screen bg-gray-200">
         <v-card class="p-6 w-full max-w-md rounded-lg border-2 border-b-gray-300 border-transparent
-        hover:outline hover:outline-2 hover:outline-green-500
-        hover:shadow-[0_5px_0_0_#10b981]
-        transition-all duration-300 ease-in-out"
+            hover:outline hover:outline-2 hover:outline-green-500
+            hover:shadow-[0_5px_0_0_#10b981]
+            transition-all duration-300 ease-in-out"
         >
             <v-card-title class="text-center text-h6 text-md-h5 text-lg-h4">Login</v-card-title>
 
