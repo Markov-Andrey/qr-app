@@ -13,12 +13,10 @@ export default defineNuxtConfig({
         },
         ssr: { noExternal: ['vuetify'] },
     },
-
     css: [
         'vuetify/styles',
         '/assets/css/tailwind.css',
     ],
-
     build: {
         transpile: ['vuetify'],
     },
@@ -34,4 +32,16 @@ export default defineNuxtConfig({
         },
     },
     compatibilityDate: '2024-11-21',
+    hooks: {
+        'build:before': () => {
+            if (process.server) {
+                const fs = require('fs');
+                const path = require('path');
+                const outputDir = path.resolve(__dirname, '.output');
+                if (fs.existsSync(outputDir)) {
+                    fs.rmSync(outputDir, { recursive: true, force: true });
+                }
+            }
+        },
+    },
 });
