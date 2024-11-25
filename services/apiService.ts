@@ -11,7 +11,7 @@ class ApiService {
         return request(() => api().post(`/login`, data));
     }
     async menuItems() {
-        return request(() => api().get(`/menu-items`));
+        return request(() => api().get(`api/menu-items`));
     }
 }
 

@@ -19,7 +19,7 @@ const api = (useToken: boolean = false): AxiosInstance => {
     const config = useRuntimeConfig();
 
     const instance = axios.create({
-        baseURL: config.public.apiBase,
+        baseURL: 'http://127.0.0.1:9000',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -28,8 +28,8 @@ const api = (useToken: boolean = false): AxiosInstance => {
     instance.interceptors.request.use(
         // @ts-ignore
         (request: AxiosRequestConfig): AxiosRequestConfig => {
-            const authToken = localStorage.getItem('auth_token');
-            if (useToken && authToken) {
+            if (useToken) {
+                const authToken = localStorage.getItem('auth_token');
                 request.headers.Authorization = `Bearer ${authToken}`;
             }
             return request;

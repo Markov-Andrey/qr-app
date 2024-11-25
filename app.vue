@@ -2,7 +2,9 @@
     <NuxtLayout>
         <v-app>
             <Header v-if="!isHeaderHidden" />
-            <NuxtPage />
+            <div class="mt-16">
+                <NuxtPage />
+            </div>
         </v-app>
     </NuxtLayout>
 </template>

@@ -16,27 +16,29 @@
                         {{ item.label }}
                     </v-btn>
                 </v-col>
+                <v-col v-if="menuItems.length === 0" class="text-center">
+                    <p>Меню не загружено</p>
+                </v-col>
             </v-row>
         </v-container>
     </v-app-bar>
 </template>
 
 <script>
-import { useRoute } from "vue-router";
-// import { apiService } from '~/services/apiService';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { apiService } from '~/services/apiService';
 
 export default {
-    name: "Header",
-    async setup() {
+    name: 'Header',
+    setup() {
         const route = useRoute();
-        // const menuItems = await apiService.menuItems();
+        const menuItems = ref([]);
 
-        const menuItems = [
-            {label: "Шаблон 1", to: "/"},
-            {label: "Шаблон 2", to: "/about"},
-            {label: "Шаблон 3", to: "/contact"},
-        ];
-
+        onMounted(async () => {
+            const response = await apiService.menuItems();
+            menuItems.value = response.data;
+        });
         const isActive = (path) => route.path === path;
 
         return {
