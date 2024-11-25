@@ -26,6 +26,12 @@ export default defineNuxtConfig({
     plugins: [
         '~/plugins/vuetify.js',
     ],
-
+    app: {
+        head: {
+            link: [
+                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+            ],
+        },
+    },
     compatibilityDate: '2024-11-21',
 });

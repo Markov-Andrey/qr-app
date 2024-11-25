@@ -2,12 +2,10 @@
     <v-app-bar app color="teal-lighten-2" dark>
         <v-container>
             <v-row align="center" justify="space-between">
-                <v-col
-                    v-for="(item, index) in menuItems"
-                    :key="index"
-                    class="text-center"
-                >
+                <v-col cols="auto" class="flex gap-2">
                     <v-btn
+                        v-for="(item, index) in menuItems"
+                        :key="index"
                         :to="item.to"
                         class="menu-btn"
                         :class="{ 'active-btn': isActive(item.to) }"
@@ -16,8 +14,9 @@
                         {{ item.label }}
                     </v-btn>
                 </v-col>
-                <v-col v-if="menuItems.length === 0" class="text-center">
-                    <p>Меню не загружено</p>
+                <v-col cols="auto" class="flex gap-4">
+                    <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/login' }">Sign In</v-btn>
+                    <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/signup' }">Sign Up Free</v-btn>
                 </v-col>
             </v-row>
         </v-container>
@@ -25,20 +24,20 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { apiService } from '~/services/apiService';
 
 export default {
     name: 'Header',
     setup() {
         const route = useRoute();
-        const menuItems = ref([]);
 
-        onMounted(async () => {
-            const response = await apiService.menuItems();
-            menuItems.value = response.data;
-        });
+        const menuItems = ref([
+            { label: 'Шаблон 1', to: '/' },
+            { label: 'Шаблон 2', to: '/about' },
+            { label: 'Шаблон 3', to: '/contact' },
+        ]);
+
         const isActive = (path) => route.path === path;
 
         return {
