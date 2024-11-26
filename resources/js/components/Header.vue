@@ -15,8 +15,8 @@
                     </v-btn>
                 </v-col>
                 <v-col cols="auto" class="flex gap-4">
-                    <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/login' }">Sign In</v-btn>
-                    <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/signup' }">Sign Up Free</v-btn>
+                    <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/login' }">Войти</v-btn>
+                    <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/signup' }">Зарегистрироваться</v-btn>
                 </v-col>
             </v-row>
         </v-container>
