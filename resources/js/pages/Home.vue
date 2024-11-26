@@ -49,7 +49,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { apiService } from '~/services/apiService';
+import { apiService } from '../api/apiService.js';
 
 const file = ref(null);
 const fileContent = ref('');

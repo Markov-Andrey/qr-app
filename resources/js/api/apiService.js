@@ -1,18 +1,19 @@
-// @ts-ignore
-import { api, request } from '~/services/api';
+import { api, request } from '../api/api.js';
 
 class ApiService {
-    private withToken: boolean = true;
+    constructor() {
+        this.withToken = true;
+    }
 
-    // async organization(id: string) {
+    // async organization(id) {
     //     return request(() => api(this.withToken).get(`/api/organization/${id}`));
     // }
-    async login(data: Record<string, any>) {
+
+    async login(data) {
         return request(() => api().post(`/login`, data));
     }
     async menuItems() {
         return request(() => api().get(`api/menu-items`));
     }
 }
-
 export const apiService = new ApiService();

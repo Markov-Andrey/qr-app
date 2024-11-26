@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar app color="teal-lighten-2" dark>
+    <v-app-bar app color="teal lighten-2" dark>
         <v-container>
             <v-row align="center" justify="space-between">
                 <v-col cols="auto" class="flex gap-2">
@@ -36,7 +36,9 @@ export default {
             { label: 'Шаблон 1', to: '/' },
         ]);
 
-        const isActive = (path) => route.path === path;
+        const isActive = (path) => {
+            return route.path === path;
+        };
 
         return {
             menuItems,

@@ -1,46 +1,38 @@
-// @ts-ignore
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-// @ts-ignore
-import { useRuntimeConfig } from '#app';
+import axios from 'axios';
 
-const request = async (
-    requestFn: () => Promise<AxiosResponse>
-): Promise<AxiosResponse> => {
+const API_BASE_URL = 'http://127.0.0.1:8000';
+
+const request = async (requestFn) => {
     try {
         return await requestFn();
     } catch (error) {
-        // @ts-ignore
         console.error(error.response?.data?.message || error.message);
         throw error;
     }
 };
 
-const api = (useToken: boolean = false): AxiosInstance => {
-    const config = useRuntimeConfig();
-
+const api = (useToken = false) => {
     const instance = axios.create({
-        baseURL: 'http://127.0.0.1:9000',
+        baseURL: API_BASE_URL,
         headers: {
             'Content-Type': 'application/json',
         },
     });
 
     instance.interceptors.request.use(
-        // @ts-ignore
-        (request: AxiosRequestConfig): AxiosRequestConfig => {
+        (request) => {
             if (useToken) {
                 const authToken = localStorage.getItem('auth_token');
                 request.headers.Authorization = `Bearer ${authToken}`;
             }
             return request;
         },
-        (error: AxiosError) => Promise.reject(error)
+        (error) => Promise.reject(error)
     );
 
     instance.interceptors.response.use(
-        (response: AxiosResponse) => response,
-        (error: AxiosError) => {
-            // @ts-ignore
+        (response) => response,
+        (error) => {
             console.error(error.response?.data?.message || error.message);
             return Promise.reject(error);
         }

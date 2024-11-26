@@ -5,7 +5,6 @@
 /public/storage
 /storage/*.key
 /vendor
-.nuxt
 .env
 .env.backup
 .env.production
