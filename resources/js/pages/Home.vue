@@ -4,7 +4,7 @@
         <v-file-input
             variant="solo-filled"
             v-model="file"
-            :label="`Выберите файл (${fileTypes.join(', ')})`"
+            :label="`Выберите файл`"
             :accept="fileTypes.join(', ')"
             @change="onFileChange"
             clearable
@@ -17,7 +17,6 @@
             </template>
         </v-file-input>
 
-        <!-- Mode Switch -->
         <div class="mb-4">
             <v-btn @click="setMode('svg')" :color="mode === 'svg' ? 'primary' : 'default'" class="mr-2">
                 SVG
@@ -27,7 +26,6 @@
             </v-btn>
         </div>
 
-        <!-- Display QR codes in SVG format -->
         <div v-if="mode === 'svg'" class="mt-4">
             <p class="text-lg font-semibold">Режим SVG</p>
             <div v-for="(qr, index) in qrCodes" :key="index" class="mb-16 w-[120px] h-[120px]">
@@ -35,7 +33,6 @@
             </div>
         </div>
 
-        <!-- Display file content in Screen mode -->
         <div v-if="mode === 'screen'" class="mt-4">
             <p class="text-lg font-semibold">Режим на экран</p>
             <pre class="bg-gray-100 p-4 rounded-md">{{ fileContent }}</pre>
