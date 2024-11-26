@@ -14,9 +14,6 @@ const request = async (requestFn) => {
 const api = (useToken = false) => {
     const instance = axios.create({
         baseURL: API_BASE_URL,
-        headers: {
-            'Content-Type': 'application/json',
-        },
     });
 
     instance.interceptors.request.use(

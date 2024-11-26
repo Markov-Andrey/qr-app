@@ -1,21 +1,23 @@
 <template>
     <div class="p-4">
-        <!-- File input -->
-        <v-file-input
-            variant="solo-filled"
-            v-model="file"
-            :label="`Выберите файл`"
-            :accept="fileTypes.join(', ')"
-            @change="onFileChange"
-            clearable
-            prepend-icon=""
-        >
-            <template v-slot:details>
-        <span class="text-sm text-gray-600">
-          Поддерживаемые форматы: {{ fileTypes.join(', ') }}
-        </span>
-            </template>
-        </v-file-input>
+        <div class="flex gap-4">
+            <v-file-input
+                variant="solo-filled"
+                v-model="file"
+                :label="`Выберите файл`"
+                :accept="fileTypes.join(', ')"
+                clearable
+                prepend-icon=""
+            >
+                <template v-slot:details>
+                <span class="text-sm text-gray-600">
+                  Поддерживаемые форматы: {{ fileTypes.join(', ') }}
+                </span>
+                </template>
+            </v-file-input>
+
+            <v-btn icon="mdi-upload-box" :disabled="!file" @click="uploadFile" color="primary"/>
+        </div>
 
         <div class="mb-4">
             <v-btn @click="setMode('svg')" :color="mode === 'svg' ? 'primary' : 'default'" class="mr-2">
@@ -26,11 +28,8 @@
             </v-btn>
         </div>
 
-        <div v-if="mode === 'svg'" class="mt-4">
-            <p class="text-lg font-semibold">Режим SVG</p>
-            <div v-for="(qr, index) in qrCodes" :key="index" class="mb-16 w-[120px] h-[120px]">
-                <img class="w-full" :src="qr" alt="QR Code" />
-            </div>
+        <div v-if="mode === 'svg'">
+            <QRCodeRenderer class="qr-renderer" ref="qrRenderer" :qrCodes="qrCodes" />
         </div>
 
         <div v-if="mode === 'screen'" class="mt-4">
@@ -38,7 +37,7 @@
             <pre class="bg-gray-100 p-4 rounded-md">{{ fileContent }}</pre>
         </div>
 
-        <v-btn @click="printQRCode" class="mt-4" color="primary">
+        <v-btn :disabled="qrCodes.length === 0" @click="printQRCode" class="mt-4" color="primary">
             Печать
         </v-btn>
     </div>
@@ -47,6 +46,7 @@
 <script setup>
 import { ref } from 'vue';
 import { apiService } from '../api/apiService.js';
+import QRCodeRenderer from "../components/QRCodeRenderer.vue";
 
 const file = ref(null);
 const fileContent = ref('');
@@ -54,46 +54,64 @@ const mode = ref('screen');
 const qrCodes = ref([]);
 const fileTypes = ref(['.txt', '.pdf', '.doc', '.docx']);
 
-async function onFileChange() {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        fileContent.value = e.target.result;
-        await fetchQr(e.target.result);
-    };
-    if (file.value) {
-        reader.readAsText(file.value);
-    }
-}
-
-async function fetchQr(fileContent) {
-    try {
-        const formData = new FormData();
-        formData.append('file', file.value);
-
-        const response = await apiService.uploadFile(formData);
-
-        qrCodes.value = response.data.qrImages;
-    } catch (error) {
-        console.error('Ошибка при отправке файла на сервер:', error);
-    }
-}
-
 function setMode(newMode) {
     mode.value = newMode;
 }
-
+async function uploadFile() {
+    const formData = new FormData();
+    formData.append('file', file.value);
+    const response = await apiService.uploadFile(formData);
+    qrCodes.value = response.data;
+}
 function printQRCode() {
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
-    printWindow.document.write('<html><head><title>QR-коды</title></head><body>');
-    printWindow.document.write('<h1>QR-коды</h1>');
+    // Ссылка на компонент QRCodeRenderer
+    const qrRenderer = document.querySelector('.qr-renderer'); // Используем правильный класс для контейнера
+    if (!qrRenderer) {
+        console.error('QRCodeRenderer не найден!');
+        return;
+    }
 
-    qrCodes.value.forEach((qr) => {
-        printWindow.document.write(`<img class="w-full" src="${qr}" />`);
-    });
+    // Создаём новое окно для печати
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        console.error('Не удалось открыть окно для печати!');
+        return;
+    }
 
-    printWindow.document.write('</body></html>');
+    // Наполняем окно содержимым QR-кодов
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Печать QR-кодов</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    padding: 20px;
+                }
+                .qr-item {
+                    margin-bottom: 20px;
+                    text-align: center;
+                }
+            </style>
+        </head>
+        <body>
+            ${qrRenderer.innerHTML}
+        </body>
+        </html>
+    `);
+
+    // Завершаем построение и запускаем печать
     printWindow.document.close();
+    printWindow.focus();
     printWindow.print();
+
+    // Опционально, закрываем окно после печати
+    printWindow.onafterprint = () => {
+        printWindow.close();
+    };
 }
 </script>
 
