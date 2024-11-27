@@ -2,7 +2,8 @@
     <v-app-bar app color="teal-darken-3">
         <v-container>
             <v-row align="center" justify="space-between">
-                <v-col cols="auto" class="flex gap-2">
+                <v-col cols="auto" class="flex gap-2 items-center justify-center">
+                    <QrLogo class="flex w-5 h-5 text-white" />
                     <span class="text-xl font-bold">QR-Gen</span>
                 </v-col>
                 <v-col cols="auto" class="flex gap-4">
@@ -28,6 +29,7 @@
 
 <script setup>
 import { computed, defineProps, defineEmits } from 'vue';
+import QrLogo from "../components/QrLogo.vue";
 
 const props = defineProps({
     menuItems: {

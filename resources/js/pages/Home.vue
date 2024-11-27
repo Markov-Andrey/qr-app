@@ -1,58 +1,68 @@
 <template>
-    <div class="p-4">
-        <div class="flex gap-4">
-            <v-file-input
-                variant="solo-filled"
-                v-model="file"
-                :label="`Выберите файл`"
-                :accept="fileTypes.join(', ')"
-                clearable
-                prepend-icon=""
-            >
-                <template v-slot:details>
-                    <span class="text-sm text-gray-600">
-                        Поддерживаемые форматы: {{ fileTypes.join(', ') }}
-                    </span>
-                </template>
-            </v-file-input>
+    <v-container class="flex gap-4">
+        <v-file-input
+            variant="solo-filled"
+            v-model="file"
+            :label="`Выберите файл`"
+            :accept="fileTypes.join(', ')"
+            clearable
+            prepend-icon=""
+            @update:modelValue="onFileChange"
+        >
+            <template v-slot:details>
+                <span class="text-sm text-gray-600">
+                    Поддерживаемые форматы: {{ fileTypes.join(', ') }}
+                </span>
+            </template>
+        </v-file-input>
 
-            <v-btn class="flex items-center justify-center gap-2" :loading="loading" :disabled="!file" @click="uploadFile" color="primary">
-                <v-icon class="mr-2">mdi-upload</v-icon>
-                Загрузить
-            </v-btn>
-        </div>
+        <v-btn class="flex items-center justify-center gap-2" :loading="loading" :disabled="!file" @click="uploadFile" color="primary">
+            <v-icon class="mr-2">mdi-upload</v-icon>
+            Загрузить
+        </v-btn>
+    </v-container>
 
-        <div v-if="file" class="m-4">
-            <p v-if="fileContent" class="text-lg font-semibold">Содержимое файла:</p>
-            <div class="bg-gray-100 p-4 rounded-md max-h-48 overflow-y-auto">
-                <pre>{{ fileContent }}</pre>
-            </div>
-        </div>
-
-        <div class="mb-4">
-            <v-btn @click="setMode('screen')" :color="mode === 'screen' ? 'primary' : 'default'" class="mr-2">
+    <v-container v-if="file">
+        <v-tabs v-model="tab" background-color="primary" dark>
+            <v-tab value="template1">
+                Предпросмотр
+            </v-tab>
+            <v-tab value="template2" :disabled="!qrCodes.length">
                 На экран
-            </v-btn>
-            <v-btn @click="setMode('download')" :color="mode === 'download' ? 'primary' : 'default'">
+            </v-tab>
+            <v-tab value="template3" :disabled="!qrCodes.length">
                 Скачать
-            </v-btn>
-        </div>
+            </v-tab>
+        </v-tabs>
 
-        <div class="m-4" v-if="mode === 'screen'">
-            <div>
-                <v-btn :disabled="qrCodes.length === 0" @click="printQRCode" class="mt-4" color="primary">
-                    Печать
-                </v-btn>
-                <div class="border border-teal-300 rounded max-h-96 overflow-y-auto p-4">
-                    <QRCodeRenderer class="qr-renderer" ref="qrRenderer" :qrCodes="qrCodes" />
-                </div>
-            </div>
-        </div>
-
-        <div v-if="mode === 'download'" class="mt-4">
-            <div>Скачать</div>
-        </div>
-    </div>
+        <v-card-text>
+            <v-tabs-window v-model="tab">
+                <v-tabs-window-item value="template1">
+                    <div v-if="file" class="m-4">
+                        <p v-if="fileContent" class="text-lg font-semibold">Содержимое файла:</p>
+                        <div class="bg-gray-100 p-4 rounded-md max-h-48 overflow-y-auto">
+                            <pre>{{ fileContent }}</pre>
+                        </div>
+                    </div>
+                </v-tabs-window-item>
+                <v-tabs-window-item value="template2">
+                    <div>
+                        <v-btn :disabled="qrCodes.length === 0" @click="printQRCode" class="mt-4" color="primary">
+                            Печать
+                        </v-btn>
+                        <div class="border border-teal-300 rounded max-h-96 overflow-y-auto p-4">
+                            <QRCodeRenderer class="qr-renderer" ref="qrRenderer" :qrCodes="qrCodes" />
+                        </div>
+                    </div>
+                </v-tabs-window-item>
+                <v-tabs-window-item value="template3">
+                    <div class="m-4">
+                        <h3>Скачать</h3>
+                    </div>
+                </v-tabs-window-item>
+            </v-tabs-window>
+        </v-card-text>
+    </v-container>
 </template>
 
 <script setup>
@@ -62,14 +72,10 @@ import QRCodeRenderer from "../components/QRCodeRenderer.vue";
 
 const file = ref(null);
 const fileContent = ref('');
-const mode = ref('screen');
 const qrCodes = ref([]);
 const loading = ref(false);
 const fileTypes = ref(['.txt']);
-
-function setMode(newMode) {
-    mode.value = newMode;
-}
+const tab = ref('template1');
 
 async function uploadFile() {
     loading.value = true;
@@ -96,6 +102,10 @@ function readFile(file) {
     reader.onerror = () => {
         fileContent.value = 'Ошибка при чтении файла';
     };
+}
+
+function onFileChange() {
+    qrCodes.value = [];
 }
 
 function printQRCode() {
