@@ -12,9 +12,8 @@
             </v-row>
         </v-container>
     </v-app-bar>
-
-    <v-app-bar app color="teal-darken-1">
-        <v-tabs :modelValue="activeTab" align-tabs="start" class="" @update:modelValue="updateActiveTab">
+    <v-app-bar app color="teal-lighten-1" density="compact">
+        <v-tabs :modelValue="activeTab" align-tabs="start" @update:modelValue="updateActiveTab">
             <v-tab
                 v-for="(item, index) in menuItems"
                 :key="index"
@@ -27,29 +26,25 @@
     </v-app-bar>
 </template>
 
-<script>
-export default {
-    name: 'Header',
-    props: {
-        menuItems: {
-            type: Array,
-            required: true,
-        },
-        modelValue: {
-            type: Number,
-            required: true,
-        },
+<script setup>
+import { computed, defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+    menuItems: {
+        type: Array,
+        required: true,
     },
-    computed: {
-        activeTab() {
-            return this.modelValue;
-        },
+    modelValue: {
+        type: Number,
+        required: true,
     },
-    methods: {
-        updateActiveTab(newValue) {
-            this.$emit('update:modelValue', newValue);
-        },
-    },
+});
+
+const emit = defineEmits();
+const activeTab = computed(() => props.modelValue);
+
+const updateActiveTab = (newValue) => {
+    emit('update:modelValue', newValue);
 };
 </script>
 

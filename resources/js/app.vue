@@ -1,21 +1,12 @@
 <template>
     <v-app>
-        <!-- Передаем меню и активный таб в хэдер -->
         <Header
             :menuItems="menuItems"
             :modelValue="activeTab"
             @update:modelValue="handleTabChange"
             @navigate="handleNavigation"
         />
-
-        <!-- Контент страницы -->
         <v-main>
-            <router-view />
-            <router-view />
-            <router-view />
-            <router-view />
-            <router-view />
-            <router-view />
             <router-view />
         </v-main>
     </v-app>
@@ -66,7 +57,6 @@ export default {
         const handleTabChange = (newTabIndex) => {
             activeTab.value = newTabIndex;
         };
-
         return {
             menuItems,
             activeTab,

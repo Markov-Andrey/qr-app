@@ -16,10 +16,13 @@
                 </template>
             </v-file-input>
 
-            <v-btn :loading="loading" icon="mdi-upload-box" :disabled="!file" @click="uploadFile" color="primary"/>
+            <v-btn class="flex items-center justify-center gap-2" :loading="loading" :disabled="!file" @click="uploadFile" color="primary">
+                <v-icon class="mr-2">mdi-upload</v-icon>
+                Загрузить
+            </v-btn>
         </div>
 
-        <div v-if="file" class="mb-4">
+        <div v-if="file" class="m-4">
             <p v-if="fileContent" class="text-lg font-semibold">Содержимое файла:</p>
             <div class="bg-gray-100 p-4 rounded-md max-h-48 overflow-y-auto">
                 <pre>{{ fileContent }}</pre>
@@ -30,25 +33,25 @@
             <v-btn @click="setMode('screen')" :color="mode === 'screen' ? 'primary' : 'default'" class="mr-2">
                 На экран
             </v-btn>
-            <v-btn @click="setMode('svg')" :color="mode === 'svg' ? 'primary' : 'default'">
-                SVG
+            <v-btn @click="setMode('download')" :color="mode === 'download' ? 'primary' : 'default'">
+                Скачать
             </v-btn>
         </div>
 
-        <div
-            class="border border-teal-300 rounded max-h-96 overflow-y-auto p-4"
-            v-if="mode === 'screen'"
-        >
-            <QRCodeRenderer class="qr-renderer" ref="qrRenderer" :qrCodes="qrCodes" />
+        <div class="m-4" v-if="mode === 'screen'">
+            <div>
+                <v-btn :disabled="qrCodes.length === 0" @click="printQRCode" class="mt-4" color="primary">
+                    Печать
+                </v-btn>
+                <div class="border border-teal-300 rounded max-h-96 overflow-y-auto p-4">
+                    <QRCodeRenderer class="qr-renderer" ref="qrRenderer" :qrCodes="qrCodes" />
+                </div>
+            </div>
         </div>
 
-        <div v-if="mode === 'svg'" class="mt-4">
+        <div v-if="mode === 'download'" class="mt-4">
             <div>Скачать</div>
         </div>
-
-        <v-btn :disabled="qrCodes.length === 0" @click="printQRCode" class="mt-4" color="primary">
-            Печать
-        </v-btn>
     </div>
 </template>
 
