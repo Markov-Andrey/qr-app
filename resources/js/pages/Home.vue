@@ -16,7 +16,7 @@
                 </template>
             </v-file-input>
 
-            <v-btn icon="mdi-upload-box" :disabled="!file" @click="uploadFile" color="primary"/>
+            <v-btn :loading="loading" icon="mdi-upload-box" :disabled="!file" @click="uploadFile" color="primary"/>
         </div>
 
         <div v-if="file" class="mb-4">
@@ -35,7 +35,10 @@
             </v-btn>
         </div>
 
-        <div v-if="mode === 'screen'">
+        <div
+            class="border border-teal-300 rounded max-h-96 overflow-y-auto p-4"
+            v-if="mode === 'screen'"
+        >
             <QRCodeRenderer class="qr-renderer" ref="qrRenderer" :qrCodes="qrCodes" />
         </div>
 
@@ -58,6 +61,7 @@ const file = ref(null);
 const fileContent = ref('');
 const mode = ref('screen');
 const qrCodes = ref([]);
+const loading = ref(false);
 const fileTypes = ref(['.txt']);
 
 function setMode(newMode) {
@@ -65,10 +69,12 @@ function setMode(newMode) {
 }
 
 async function uploadFile() {
+    loading.value = true;
     const formData = new FormData();
     formData.append('file', file.value);
     const response = await apiService.uploadFile(formData);
     qrCodes.value = response.data;
+    loading.value = false;
 }
 
 watchEffect(() => {

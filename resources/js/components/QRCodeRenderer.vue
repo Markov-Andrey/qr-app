@@ -1,7 +1,7 @@
 <template>
-    <div ref="printContent">
-        <div v-for="(qr, index) in qrCodes" :key="index">
-            <div class="flex gap-2" v-html="qr"></div>
+    <div ref="printContent" class="flex flex-wrap gap-4">
+        <div class="flex" v-for="(qr, index) in qrCodes" :key="index">
+            <div v-html="qr"></div>
         </div>
     </div>
 </template>
@@ -16,7 +16,4 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.qr-item {
-    margin-bottom: 20px;
-}
 </style>

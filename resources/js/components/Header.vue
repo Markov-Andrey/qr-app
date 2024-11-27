@@ -1,18 +1,9 @@
 <template>
-    <v-app-bar app color="teal lighten-2" dark>
+    <v-app-bar app color="teal-darken-3">
         <v-container>
             <v-row align="center" justify="space-between">
                 <v-col cols="auto" class="flex gap-2">
-                    <v-btn
-                        v-for="(item, index) in menuItems"
-                        :key="index"
-                        :to="item.to"
-                        class="menu-btn"
-                        :class="{ 'active-btn': isActive(item.to) }"
-                        variant="text"
-                    >
-                        {{ item.label }}
-                    </v-btn>
+                    <span class="text-xl font-bold">QR-Gen</span>
                 </v-col>
                 <v-col cols="auto" class="flex gap-4">
                     <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/login' }">Войти</v-btn>
@@ -21,29 +12,43 @@
             </v-row>
         </v-container>
     </v-app-bar>
+
+    <v-app-bar app color="teal-darken-1">
+        <v-tabs :modelValue="activeTab" align-tabs="start" class="" @update:modelValue="updateActiveTab">
+            <v-tab
+                v-for="(item, index) in menuItems"
+                :key="index"
+                :value="index"
+                @click="$emit('navigate', item.to)"
+            >
+                {{ item.label }}
+            </v-tab>
+        </v-tabs>
+    </v-app-bar>
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
-
 export default {
     name: 'Header',
-    setup() {
-        const route = useRoute();
-
-        const menuItems = ref([
-            { label: 'Шаблон 1', to: '/' },
-        ]);
-
-        const isActive = (path) => {
-            return route.path === path;
-        };
-
-        return {
-            menuItems,
-            isActive,
-        };
+    props: {
+        menuItems: {
+            type: Array,
+            required: true,
+        },
+        modelValue: {
+            type: Number,
+            required: true,
+        },
+    },
+    computed: {
+        activeTab() {
+            return this.modelValue;
+        },
+    },
+    methods: {
+        updateActiveTab(newValue) {
+            this.$emit('update:modelValue', newValue);
+        },
     },
 };
 </script>

@@ -8,34 +8,19 @@ class FileUploadController extends Controller
 {
     public function upload(Request $request): \Illuminate\Http\JsonResponse
     {
-        if (!$request->hasFile('file')) {
-            return response()->json(['message' => 'No file provided'], 400);
+        if (!$request->hasFile('file') || !$request->file('file')->isValid()) {
+            return response()->json(['message' => 'Invalid or missing file'], 400);
         }
-        $file = $request->file('file');
-        if (!$file->isValid()) {
-            return response()->json(['message' => 'Invalid file'], 400);
-        }
-        $content = file($file->getRealPath(), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $lineCount = count($content);
+        $content = file($request->file('file')->getRealPath(), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $svgFiles = array_map(fn($line) => $this->generateSvg(trim($line)), $content);
 
-        $svgFiles = [];
-        foreach ($content as $line) {
-            $svg = $this->generateSvg($line);
-            $svgFiles[] = $svg;
-        }
-
-        return response()->json([
-            'svgs' => $svgFiles,
-        ]);
+        return response()->json(array_filter($svgFiles));
     }
 
     private function generateSvg($content)
     {
         return <<<SVG
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
- "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+<svg xmlns="http://www.w3.org/2000/svg"
  width="174.000000pt" height="173.000000pt" viewBox="0 0 174.000000 173.000000"
  preserveAspectRatio="xMidYMid meet">
 
