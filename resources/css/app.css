@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body {
+    overflow-y: hidden;
+}
+html, body:has(:not(:empty)) {
+    overflow-y: auto;
+}
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #2cb485;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #38d7a0;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+    background-color: rgb(166, 194, 192);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-track:hover {
+    background-color: rgb(186, 218, 216);
+}

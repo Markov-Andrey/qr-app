@@ -21,7 +21,9 @@
 
         <div v-if="file" class="mb-4">
             <p v-if="fileContent" class="text-lg font-semibold">Содержимое файла:</p>
-            <pre class="bg-gray-100 p-4 rounded-md">{{ fileContent }}</pre>
+            <div class="bg-gray-100 p-4 rounded-md max-h-48 overflow-y-auto">
+                <pre>{{ fileContent }}</pre>
+            </div>
         </div>
 
         <div class="mb-4">
