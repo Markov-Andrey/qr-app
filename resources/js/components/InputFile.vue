@@ -25,7 +25,7 @@
 
 <script>
 export default {
-    name: "Input",
+    name: "InputFile",
     props: {
         fileTypes: {
             type: Array,
@@ -45,7 +45,6 @@ export default {
         onFileChange(newFile) {
             this.$emit('update:modelValue', newFile);
         },
-
         uploadFile() {
             this.$emit('upload', this.file);
         },

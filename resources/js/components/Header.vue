@@ -13,22 +13,10 @@
             </v-row>
         </v-container>
     </v-app-bar>
-    <v-app-bar app color="teal-lighten-1" density="compact">
-        <v-tabs :modelValue="activeTab" align-tabs="start" @update:modelValue="updateActiveTab">
-            <v-tab
-                v-for="(item, index) in menuItems"
-                :key="index"
-                :value="index"
-                @click="$emit('navigate', item.to)"
-            >
-                {{ item.label }}
-            </v-tab>
-        </v-tabs>
-    </v-app-bar>
 </template>
 
 <script setup>
-import { computed, defineProps, defineEmits } from 'vue';
+import { defineProps } from 'vue';
 import QrLogo from "../components/QrLogo.vue";
 
 const props = defineProps({
@@ -41,13 +29,6 @@ const props = defineProps({
         required: true,
     },
 });
-
-const emit = defineEmits();
-const activeTab = computed(() => props.modelValue);
-
-const updateActiveTab = (newValue) => {
-    emit('update:modelValue', newValue);
-};
 </script>
 
 <style scoped>

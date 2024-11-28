@@ -1,5 +1,5 @@
 <template>
-    <Input
+    <InputFile
         :fileTypes="fileTypes"
         :loading="loading"
         @update:modelValue="onFileChange"
@@ -7,31 +7,42 @@
         v-model="file"
     />
 
-    <v-container v-if="file">
-        <v-tabs v-model="tab" background-color="primary" dark>
-            <v-tab value="view">
-                Предпросмотр
-            </v-tab>
-            <v-tab value="screen" :disabled="!qrCodes.length">
-                На экран
-            </v-tab>
-            <v-tab value="files" :disabled="!qrCodes.length">
-                Скачать
-            </v-tab>
-        </v-tabs>
+    <div v-if="file" class="d-flex mt-[50px]">
+        <div class="tabs-container text-white">
+            <v-tabs
+                height="60"
+                slider-color="#f78166"
+                v-model="activeTemplate"
+                direction="vertical"
+                color="orange-lighten-3"
+                grow
+                class="slider-right"
+            >
+                <v-tab class="bg-teal-500" value="template1">Шаблон 1</v-tab>
+                <v-tab class="bg-teal-500" value="template2">Шаблон 2</v-tab>
+                <v-tab class="bg-teal-500" value="template3">Шаблон 3</v-tab>
+            </v-tabs>
+        </div>
 
-        <v-card-text>
-            <v-tabs-window v-model="tab">
-                <v-tabs-window-item value="view">
-                    <div v-if="file" class="m-4">
-                        <p v-if="fileContent" class="text-lg font-semibold">Содержимое файла:</p>
-                        <div class="bg-gray-100 p-4 rounded-md max-h-48 overflow-y-auto">
-                            <pre>{{ fileContent }}</pre>
-                        </div>
+        <div class="content-container w-full mt-[-50px]">
+            <v-tabs
+                v-model="activeAction"
+                class="bg-teal-600 text-white"
+                slider-color="#f78166"
+                color="orange-lighten-3"
+                grow
+            >
+                <v-tab value="preview">Предпросмотр файла</v-tab>
+                <v-tab value="screen" :disabled="!qrCodes.length">На экран</v-tab>
+                <v-tab value="download" :disabled="!qrCodes.length">Скачать</v-tab>
+            </v-tabs>
+
+            <div class="content-area m-4">
+                <div v-if="activeTemplate === 'template1'">
+                    <div v-if="activeAction === 'preview'">
+                        <PreviewComponent :content="fileContent" />
                     </div>
-                </v-tabs-window-item>
-                <v-tabs-window-item value="screen">
-                    <div>
+                    <div v-else-if="activeAction === 'screen'">
                         <div class="flex gap-4">
                             <v-btn :disabled="qrCodes.length === 0" @click="printQRCode" class="mt-4" color="primary">
                                 <v-icon class="mr-2">mdi-printer</v-icon>
@@ -52,32 +63,57 @@
                                 />
                             </div>
                         </div>
-                        <div>
-                            <h1 class="font-bold text-xl p-4">Предпросмотр:</h1>
-                            <div class="preview-container overflow-y-auto">
-                                <div class="a4-sheet qr-renderer">
-                                    <QRCodeRenderer ref="qrRenderer" :sizeQr="selectedSize" :qrCodes="qrCodes" />
-                                </div>
+                        <div class="preview-container overflow-y-auto">
+                            <div class="a4-sheet qr-renderer">
+                                <QRCodeRenderer ref="qrRenderer" :sizeQr="selectedSize" :qrCodes="qrCodes" />
                             </div>
                         </div>
                     </div>
-                </v-tabs-window-item>
-                <v-tabs-window-item value="files">
-                    <div class="m-4">
-                        <h3>Скачать</h3>
+                    <div v-else-if="activeAction === 'download'">
+                        <DownloadFileComponent/>
                     </div>
-                </v-tabs-window-item>
-            </v-tabs-window>
-        </v-card-text>
-    </v-container>
+                </div>
+
+                <div v-if="activeTemplate === 'template2'">
+                    <div v-if="activeAction === 'preview'">
+                        <PreviewComponent :content="fileContent" />
+                    </div>
+                    <div v-else-if="activeAction === 'screen'">
+                        <h3>На экран - Шаблон 2</h3>
+                        <p>Здесь отображается вывод на экран для Шаблона 2.</p>
+                    </div>
+                    <div v-else-if="activeAction === 'download'">
+                        <DownloadFileComponent/>
+                    </div>
+                </div>
+
+                <div v-if="activeTemplate === 'template3'">
+                    <div v-if="activeAction === 'preview'">
+                        <PreviewComponent :content="fileContent" />
+                    </div>
+                    <div v-else-if="activeAction === 'screen'">
+                        <h3>На экран - Шаблон 3</h3>
+                        <p>Здесь отображается вывод на экран для Шаблона 3.</p>
+                    </div>
+                    <div v-else-if="activeAction === 'download'">
+                        <DownloadFileComponent/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
 import { ref, watchEffect } from 'vue';
 import { apiService } from '../api/apiService.js';
 import QRCodeRenderer from "../components/QRCodeRenderer.vue";
-import Input from "../components/Input.vue";
+import InputFile from "../components/InputFile.vue";
+import PreviewComponent from "../components/PreviewComponent.vue";
+import DownloadFileComponent from "../components/DownloadFileComponent.vue";
 
+const activeTemplate = ref('template1');
+const activeAction = ref('preview');
 const file = ref(null);
 const fileContent = ref('');
 const qrCodes = ref([]);
@@ -105,7 +141,6 @@ async function uploadFile() {
 watchEffect(() => {
     if (file.value) readFile(file.value);
 });
-
 function readFile(file) {
     const reader = new FileReader();
 
@@ -122,7 +157,6 @@ function readFile(file) {
 
 function onFileChange() {
     qrCodes.value = [];
-    tab.value = 'template1';
 }
 
 function printQRCode() {
@@ -181,5 +215,10 @@ function printQRCode() {
     padding: 28px 28px;
     gap: calc(5px * (794 / 210));
     box-sizing: border-box;
+}
+.slider-right ::v-deep(.v-tab__slider) {
+    right: 0 !important;
+    left: auto;
+    width: 5px;
 }
 </style>
