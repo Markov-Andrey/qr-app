@@ -157,6 +157,7 @@ function readFile(file) {
 
 function onFileChange() {
     qrCodes.value = [];
+    activeAction.value = 'preview';
 }
 
 function printQRCode() {
