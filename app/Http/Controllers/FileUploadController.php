@@ -17,11 +17,11 @@ class FileUploadController extends Controller
         return response()->json(array_filter($svgFiles));
     }
 
-    private function generateSvg($content)
+    private function generateSvg($content): string
     {
         return <<<SVG
 <svg xmlns="http://www.w3.org/2000/svg"
- width="174.000000pt" height="173.000000pt" viewBox="0 0 174.000000 173.000000"
+ viewBox="0 0 174.000000 173.000000"
  preserveAspectRatio="xMidYMid meet">
 
 <g transform="translate(0.000000,173.000000) scale(0.100000,-0.100000)"
