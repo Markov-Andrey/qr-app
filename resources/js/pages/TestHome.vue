@@ -32,7 +32,7 @@
                     Three
                 </v-tabs-window-item>
                 <v-tabs-window-item :value="4">
-                    4
+                    <PreviewComponent :content="fileContent" />
                 </v-tabs-window-item>
                 <v-tabs-window-item :value="5">
                     5

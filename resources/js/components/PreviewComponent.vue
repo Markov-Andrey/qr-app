@@ -3,7 +3,7 @@
         <pre>{{ content || 'Нет данных для отображения' }}</pre>
     </div>
     <div class="m-4 flex gap-2">
-        <v-btn prepend-icon="mdi-chevron-left-circle" color="primary">Назад</v-btn>
+        <v-btn prepend-icon="mdi-chevron-left-circle" color="orange">Назад</v-btn>
         <v-btn append-icon="mdi-chevron-right-circle" color="primary">Далее</v-btn>
     </div>
 </template>
