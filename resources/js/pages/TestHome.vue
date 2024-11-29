@@ -1,20 +1,22 @@
 <template>
-    <div>
+    <v-container>
         <v-tabs
             v-model="activeTemplate"
             bg-color="primary"
             color="orange-lighten-3"
-            class="slider-custom"
+            class="slider-custom rounded-full"
+            grow
         >
-            <v-tab prepend-icon="mdi-upload" value="one">Загрузить файл</v-tab>
-            <v-tab prepend-icon="mdi-eye" value="two" :disabled="!file">Предпросмотр</v-tab>
-            <v-tab prepend-icon="mdi-monitor-screenshot" value="three" :disabled="!file">На экран</v-tab>
-            <v-tab prepend-icon="mdi-download" value="four" :disabled="!file">Скачать</v-tab>
+            <v-tab prepend-icon="mdi-upload" :value="1">Загрузить файл</v-tab>
+            <v-tab prepend-icon="mdi-eye" :value="2" :disabled="!file">Предпросмотр</v-tab>
+            <v-tab prepend-icon="mdi-qrcode" :value="3" :disabled="!file">Шаблон</v-tab>
+            <v-tab prepend-icon="mdi-monitor-screenshot" :value="4" :disabled="!file">На экран</v-tab>
+            <v-tab prepend-icon="mdi-download" :value="5" :disabled="!file">Скачать</v-tab>
         </v-tabs>
 
         <v-card-text>
             <v-tabs-window v-model="activeTemplate">
-                <v-tabs-window-item value="one">
+                <v-tabs-window-item :value="1">
                     <InputFile
                         :fileTypes="fileTypes"
                         :loading="loading"
@@ -23,18 +25,21 @@
                         v-model="file"
                     />
                 </v-tabs-window-item>
-                <v-tabs-window-item value="two">
+                <v-tabs-window-item :value="2">
                     <PreviewComponent :content="fileContent" />
                 </v-tabs-window-item>
-                <v-tabs-window-item value="three">
+                <v-tabs-window-item :value="3">
                     Three
                 </v-tabs-window-item>
-                <v-tabs-window-item value="four">
-                    Four
+                <v-tabs-window-item :value="4">
+                    4
+                </v-tabs-window-item>
+                <v-tabs-window-item :value="5">
+                    5
                 </v-tabs-window-item>
             </v-tabs-window>
         </v-card-text>
-    </div>
+    </v-container>
 </template>
 
 <script setup>
@@ -43,7 +48,7 @@ import { apiService } from '../api/apiService.js';
 import InputFile from "../components/InputFile.vue";
 import PreviewComponent from "../components/PreviewComponent.vue";
 
-const activeTemplate = ref('one');
+const activeTemplate = ref(1);
 const file = ref(null);
 const fileContent = ref('');
 const qrCodes = ref([]);
@@ -53,9 +58,9 @@ const fileTypes = ref(['.txt']);
 watchEffect(() => {
     if (file.value) {
         readFile(file.value);
-        activeTemplate.value = 'two';
+        activeTemplate.value = 2;
     } else {
-        activeTemplate.value = 'one';
+        activeTemplate.value = 1;
     }
 });
 
