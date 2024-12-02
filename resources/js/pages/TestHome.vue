@@ -1,94 +1,83 @@
 <template>
     <v-container>
-        <v-tabs
-            v-model="activeTemplate"
-            bg-color="primary"
-            color="orange-lighten-3"
-            class="slider-custom rounded-full"
-            grow
-        >
-            <v-tab prepend-icon="mdi-upload" :value="1">Загрузить файл</v-tab>
-            <v-tab prepend-icon="mdi-eye" :value="2" :disabled="!file">Предпросмотр</v-tab>
-            <v-tab prepend-icon="mdi-qrcode" :value="3" :disabled="!file">Шаблон</v-tab>
-            <v-tab prepend-icon="mdi-monitor-screenshot" :value="4" :disabled="!file">На экран</v-tab>
-            <v-tab prepend-icon="mdi-download" :value="5" :disabled="!file">Скачать</v-tab>
-        </v-tabs>
+        <v-stepper v-model="activeStep" alt-labels>
+            <v-stepper-header>
+                <v-stepper-item :value="1">
+                    <template v-slot:title>Загрузить файл</template>
+                </v-stepper-item>
+                <v-divider />
+                <v-stepper-item :value="2">
+                    <template v-slot:title>Предпросмотр</template>
+                </v-stepper-item>
+                <v-divider />
+                <v-stepper-item :value="3">
+                    <template v-slot:title>Шаблон</template>
+                </v-stepper-item>
+                <v-divider />
+                <v-stepper-item :value="4">
+                    <template v-slot:title>На экран</template>
+                </v-stepper-item>
+                <v-divider />
+                <v-stepper-item :value="5">
+                    <template v-slot:title>Скачать</template>
+                </v-stepper-item>
+            </v-stepper-header>
 
-        <v-card-text>
-            <v-tabs-window v-model="activeTemplate">
-                <v-tabs-window-item :value="1">
-                    <InputFile
-                        :fileTypes="fileTypes"
-                        :loading="loading"
-                        @update:modelValue="onFileChange"
-                        @upload="uploadFile"
-                        v-model="file"
-                    />
-                </v-tabs-window-item>
-                <v-tabs-window-item :value="2">
-                    <PreviewComponent :content="fileContent" />
-                </v-tabs-window-item>
-                <v-tabs-window-item :value="3">
-                    Three
-                </v-tabs-window-item>
-                <v-tabs-window-item :value="4">
-                    <PreviewComponent :content="fileContent" />
-                </v-tabs-window-item>
-                <v-tabs-window-item :value="5">
-                    5
-                </v-tabs-window-item>
-            </v-tabs-window>
-        </v-card-text>
+            <v-stepper-window>
+                <v-stepper-window-item :value="1">
+                    <v-card flat>
+                        <v-card-title>Загрузить файл</v-card-title>
+                        <v-card-text>Контент для загрузки файла.</v-card-text>
+                    </v-card>
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="2">
+                    <v-card flat>
+                        <v-card-title>Предпросмотр</v-card-title>
+                        <v-card-text>Контент для предпросмотра.</v-card-text>
+                    </v-card>
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="3">
+                    <v-card flat>
+                        <v-card-title>Шаблон</v-card-title>
+                        <v-card-text>Контент для выбора шаблона.</v-card-text>
+                    </v-card>
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="4">
+                    <v-card flat>
+                        <v-card-title>На экран</v-card-title>
+                        <v-card-text>Контент для вывода на экран.</v-card-text>
+                    </v-card>
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="5">
+                    <v-card flat>
+                        <v-card-title>Скачать</v-card-title>
+                        <v-card-text>Контент для скачивания файла.</v-card-text>
+                    </v-card>
+                </v-stepper-window-item>
+            </v-stepper-window>
+
+            <v-stepper-actions
+                :next-text="'Далее'"
+                :prev-text="'Назад'"
+                @click:next="nextStep"
+                @click:prev="prevStep"
+            />
+        </v-stepper>
     </v-container>
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
-import { apiService } from '../api/apiService.js';
-import InputFile from "../components/InputFile.vue";
-import PreviewComponent from "../components/PreviewComponent.vue";
+import { ref } from 'vue';
 
-const activeTemplate = ref(1);
-const file = ref(null);
-const fileContent = ref('');
-const qrCodes = ref([]);
-const loading = ref(false);
-const fileTypes = ref(['.txt']);
+const activeStep = ref(1);
 
-watchEffect(() => {
-    if (file.value) {
-        readFile(file.value);
-        activeTemplate.value = 2;
-    } else {
-        activeTemplate.value = 1;
-    }
-});
+const nextStep = () => {
+    if (activeStep.value < 5) activeStep.value++;
+};
 
-async function uploadFile() {
-    loading.value = true;
-    const formData = new FormData();
-    formData.append('file', file.value);
-    const response = await apiService.uploadFile(formData);
-    qrCodes.value = response.data;
-    loading.value = false;
-}
-
-function readFile(file) {
-    const reader = new FileReader();
-    if (file.type === 'text/plain') {
-        reader.readAsText(file);
-    }
-    reader.onload = (event) => {
-        fileContent.value = event.target.result;
-    };
-    reader.onerror = () => {
-        fileContent.value = 'Ошибка при чтении файла';
-    };
-}
-
-function onFileChange() {
-    qrCodes.value = [];
-}
+const prevStep = () => {
+    if (activeStep.value > 1) activeStep.value--;
+};
 </script>
 
 <style scoped>
