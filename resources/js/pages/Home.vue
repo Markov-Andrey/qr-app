@@ -1,24 +1,24 @@
 <template>
     <v-container>
-        <v-stepper v-model="activeStep" alt-labels>
+        <v-stepper v-model="activeStep" alt-labels editable>
             <v-stepper-header>
                 <v-stepper-item color="teal-darken-2" :complete="file" :value="1">
                     <template v-slot:title>Загрузить файл</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(1)" />
-                <v-stepper-item color="teal-darken-2" :complete="activeStep > 2" :value="2">
+                <v-stepper-item color="teal-darken-2" :disabled="!file" :complete="activeStep > 2" :value="2">
                     <template v-slot:title>Предпросмотр</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(2)" />
-                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="3">
+                <v-stepper-item color="teal-darken-2" :disabled="!file" :complete="activeStep > 3" :value="3">
                     <template v-slot:title>Шаблон</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(3)" />
-                <v-stepper-item color="teal-darken-2" :complete="activeStep > 4" :value="4">
+                <v-stepper-item color="teal-darken-2" :disabled="!file || !selectedTemplate" :complete="activeStep > 4" :value="4">
                     <template v-slot:title>На экран</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(4)" />
-                <v-stepper-item color="teal-darken-2" :complete="activeStep > 5" :value="5">
+                <v-stepper-item color="teal-darken-2" :disabled="!file || !selectedTemplate" :complete="activeStep > 5" :value="5">
                     <template v-slot:title>Скачать</template>
                 </v-stepper-item>
             </v-stepper-header>
