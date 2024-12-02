@@ -6,19 +6,19 @@
                     <template v-slot:title>Загрузить файл</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(1)" />
-                <v-stepper-item color="teal-darken-2" :complete="file && activeStep > 2" :value="2">
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 2" :value="2">
                     <template v-slot:title>Предпросмотр</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(2)" />
-                <v-stepper-item color="teal-darken-2" :value="3">
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="3">
                     <template v-slot:title>Шаблон</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(3)" />
-                <v-stepper-item color="teal-darken-2" :value="4">
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="4">
                     <template v-slot:title>На экран</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(4)" />
-                <v-stepper-item color="teal-darken-2" :value="5">
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="5">
                     <template v-slot:title>Скачать</template>
                 </v-stepper-item>
             </v-stepper-header>
@@ -37,7 +37,7 @@
                     </v-card>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="3">
-                    <TemplateComponent/>
+                    <TemplateComponent @template="templateSelection" />
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="4">
                     <v-card flat>
@@ -83,6 +83,7 @@ import TemplateComponent from "../components/TemplateComponent.vue";
 const fileTypes = ref(['.txt']);
 const activeStep = ref(1);
 const file = ref(null);
+const selectedTemplate = ref(null);
 
 const nextStep = () => {
     if (activeStep.value < 5) {
@@ -101,15 +102,18 @@ const isNextDisabled = computed(() => {
         case 2:
             return !file.value;
         case 3:
-            return !file.value;
+            return !(file.value && selectedTemplate.value);
         case 4:
-            return !file.value;
+            return !(file.value && selectedTemplate.value);
         case 5:
-            return true;
+            return !(file.value && selectedTemplate.value);
         default:
             return false;
     }
 });
+function templateSelection(template) {
+    selectedTemplate.value = template;
+}
 function onFileChange(newFile) {
     file.value = newFile;
     if (file.value) activeStep.value = 2;
