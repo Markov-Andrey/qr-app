@@ -15,11 +15,6 @@
         </span>
             </template>
         </v-file-input>
-
-        <v-btn class="flex items-center justify-center gap-2" :loading="loading" :disabled="!file" @click="uploadFile" color="primary">
-            <v-icon class="mr-2">mdi-upload</v-icon>
-            Загрузить
-        </v-btn>
     </v-container>
 </template>
 
@@ -31,10 +26,6 @@ export default {
             type: Array,
             required: true,
         },
-        loading: {
-            type: Boolean,
-            default: false,
-        },
     },
     data() {
         return {
@@ -44,9 +35,6 @@ export default {
     methods: {
         onFileChange(newFile) {
             this.$emit('update:modelValue', newFile);
-        },
-        uploadFile() {
-            this.$emit('upload', this.file);
         },
     },
 };

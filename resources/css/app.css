@@ -26,9 +26,3 @@ html, body:has(:not(:empty)) {
 ::-webkit-scrollbar-track:hover {
     background-color: rgb(186, 218, 216);
 }
-
-.v-stepper-header .v-divider {
-    border-bottom: 2px solid #105641;
-    background-color: transparent;
-    width: 100%;
-}

@@ -1,23 +1,43 @@
 <template>
     <div class="bg-gray-100 p-4 rounded-md max-h-96 overflow-y-auto">
-        <pre>{{ content || 'Нет данных для отображения' }}</pre>
-    </div>
-    <div class="my-4 flex justify-between gap-2">
-        <v-btn prepend-icon="mdi-chevron-left-circle" color="orange">Назад</v-btn>
-        <v-btn append-icon="mdi-chevron-right-circle" color="primary">Далее</v-btn>
+        <pre>{{ fileContent || 'Нет данных для отображения' }}</pre>
     </div>
 </template>
 
-<script>
-export default {
-    name: "PreviewComponent",
-    props: {
-        content: {
-            type: String,
-            default: null,
-        },
-    },
-};
+<script setup>
+import {ref, watch} from 'vue';
+
+const props = defineProps({
+    file: {
+        type: File,
+        default: null
+    }
+});
+
+const fileContent = ref('');
+
+watch(() => props.file, (newFile) => {
+    if (newFile) {
+        readFile(newFile);
+    } else {
+        fileContent.value = '';
+    }
+}, {immediate: true});
+
+function readFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+        fileContent.value = reader.result;
+    };
+    reader.onerror = () => {
+        fileContent.value = 'Ошибка при чтении файла';
+    };
+    if (file && file.type === 'text/plain') {
+        reader.readAsText(file);
+    } else {
+        fileContent.value = 'Файл не поддерживается';
+    }
+}
 </script>
 
 <style scoped>
