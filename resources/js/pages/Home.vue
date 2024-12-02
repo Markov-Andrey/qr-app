@@ -1,225 +1,131 @@
 <template>
-    <InputFile
-        :fileTypes="fileTypes"
-        :loading="loading"
-        @update:modelValue="onFileChange"
-        @upload="uploadFile"
-        v-model="file"
-    />
+    <v-container>
+        <v-stepper v-model="activeStep" alt-labels>
+            <v-stepper-header>
+                <v-stepper-item color="teal-darken-2" :complete="file" :value="1">
+                    <template v-slot:title>Загрузить файл</template>
+                </v-stepper-item>
+                <v-divider opacity="1" :class="getDividerClass(1)" />
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 2" :value="2">
+                    <template v-slot:title>Предпросмотр</template>
+                </v-stepper-item>
+                <v-divider opacity="1" :class="getDividerClass(2)" />
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="3">
+                    <template v-slot:title>Шаблон</template>
+                </v-stepper-item>
+                <v-divider opacity="1" :class="getDividerClass(3)" />
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="4">
+                    <template v-slot:title>На экран</template>
+                </v-stepper-item>
+                <v-divider opacity="1" :class="getDividerClass(4)" />
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="5">
+                    <template v-slot:title>Скачать</template>
+                </v-stepper-item>
+            </v-stepper-header>
 
-    <div v-if="file" class="d-flex mt-[50px]">
-        <div class="tabs-container text-white">
-            <v-tabs
-                height="60"
-                slider-color="#f78166"
-                v-model="activeTemplate"
-                direction="vertical"
-                color="orange-lighten-3"
-                grow
-                class="slider-right"
+            <v-stepper-window>
+                <v-stepper-window-item :value="1">
+                    <InputFile
+                        :fileTypes="fileTypes"
+                        @update:modelValue="onFileChange"
+                        v-model="file"
+                    />
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="2">
+                    <v-card flat>
+                        <PreviewComponent :file="file" />
+                    </v-card>
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="3">
+                    <TemplateComponent @template="templateSelection" />
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="4">
+                    <v-card flat>
+                        <v-card-title>На экран</v-card-title>
+                        <v-card-text>Контент для вывода на экран.</v-card-text>
+                    </v-card>
+                </v-stepper-window-item>
+                <v-stepper-window-item :value="5">
+                    <v-card flat>
+                        <v-card-title>Скачать</v-card-title>
+                        <v-card-text>Контент для скачивания файла.</v-card-text>
+                    </v-card>
+                </v-stepper-window-item>
+            </v-stepper-window>
+
+            <v-stepper-actions
+                :next-text="'Далее'"
+                :prev-text="'Назад'"
+                @click:next="nextStep"
+                @click:prev="prevStep"
             >
-                <v-tab class="bg-teal-500" value="template1">Шаблон 1</v-tab>
-                <v-tab class="bg-teal-500" value="template2">Шаблон 2</v-tab>
-                <v-tab class="bg-teal-500" value="template3">Шаблон 3</v-tab>
-            </v-tabs>
-        </div>
-
-        <div class="content-container w-full mt-[-50px]">
-            <v-tabs
-                v-model="activeAction"
-                class="bg-teal-600 text-white"
-                slider-color="#f78166"
-                color="orange-lighten-3"
-                grow
-            >
-                <v-tab value="preview">Предпросмотр файла</v-tab>
-                <v-tab value="screen" :disabled="!qrCodes.length">На экран</v-tab>
-                <v-tab value="download" :disabled="!qrCodes.length">Скачать</v-tab>
-            </v-tabs>
-
-            <div class="content-area m-4">
-                <div v-if="activeTemplate === 'template1'">
-                    <div v-if="activeAction === 'preview'">
-                        <PreviewComponent :content="fileContent" />
-                    </div>
-                    <div v-else-if="activeAction === 'screen'">
-                        <div class="flex gap-4">
-                            <v-btn :disabled="qrCodes.length === 0" @click="printQRCode" class="mt-4" color="primary">
-                                <v-icon class="mr-2">mdi-printer</v-icon>
-                                Печать {{ selectedSize.text }}
-                            </v-btn>
-                            <div class="w-[150px]">
-                                <v-select
-                                    color="primary"
-                                    variant="solo"
-                                    v-model="selectedSize"
-                                    :items="items"
-                                    item-title="text"
-                                    item-value="value"
-                                    label="Select"
-                                    persistent-hint
-                                    return-object
-                                    single-line
-                                />
-                            </div>
-                        </div>
-                        <div class="preview-container overflow-y-auto">
-                            <div class="a4-sheet qr-renderer">
-                                <QRCodeRenderer ref="qrRenderer" :sizeQr="selectedSize" :qrCodes="qrCodes" />
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else-if="activeAction === 'download'">
-                        <DownloadFileComponent/>
-                    </div>
-                </div>
-
-                <div v-if="activeTemplate === 'template2'">
-                    <div v-if="activeAction === 'preview'">
-                        <PreviewComponent :content="fileContent" />
-                    </div>
-                    <div v-else-if="activeAction === 'screen'">
-                        <h3>На экран - Шаблон 2</h3>
-                        <p>Здесь отображается вывод на экран для Шаблона 2.</p>
-                    </div>
-                    <div v-else-if="activeAction === 'download'">
-                        <DownloadFileComponent/>
-                    </div>
-                </div>
-
-                <div v-if="activeTemplate === 'template3'">
-                    <div v-if="activeAction === 'preview'">
-                        <PreviewComponent :content="fileContent" />
-                    </div>
-                    <div v-else-if="activeAction === 'screen'">
-                        <h3>На экран - Шаблон 3</h3>
-                        <p>Здесь отображается вывод на экран для Шаблона 3.</p>
-                    </div>
-                    <div v-else-if="activeAction === 'download'">
-                        <DownloadFileComponent/>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                <template #prev="{ props }">
+                    <v-btn prepend-icon="mdi-chevron-left-circle" color="orange" @click="props.onClick" :disabled="activeStep === 1">
+                        Назад
+                    </v-btn>
+                </template>
+                <template #next="{ props }">
+                    <v-btn append-icon="mdi-chevron-right-circle" color="primary" @click="props.onClick" :disabled="isNextDisabled">
+                        Далее
+                    </v-btn>
+                </template>
+            </v-stepper-actions>
+        </v-stepper>
+    </v-container>
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
-import { apiService } from '../api/apiService.js';
-import QRCodeRenderer from "../components/QRCodeRenderer.vue";
+import {computed, ref} from 'vue';
 import InputFile from "../components/InputFile.vue";
 import PreviewComponent from "../components/PreviewComponent.vue";
-import DownloadFileComponent from "../components/DownloadFileComponent.vue";
+import TemplateComponent from "../components/TemplateComponent.vue";
 
-const activeTemplate = ref('template1');
-const activeAction = ref('preview');
-const file = ref(null);
-const fileContent = ref('');
-const qrCodes = ref([]);
-const loading = ref(false);
 const fileTypes = ref(['.txt']);
-const tab = ref('view');
-const items = ref([
-    { text: '10x10', value: [1, 1] },
-    { text: '20x20', value: [2, 2] },
-    { text: '30x30', value: [3, 3] },
-    { text: '40x40', value: [4, 4] },
-    { text: '50x50', value: [5, 5] },
-]);
-const selectedSize = ref(items.value[0]);
+const activeStep = ref(1);
+const file = ref(null);
+const selectedTemplate = ref(null);
 
-async function uploadFile() {
-    loading.value = true;
-    const formData = new FormData();
-    formData.append('file', file.value);
-    const response = await apiService.uploadFile(formData);
-    qrCodes.value = response.data;
-    loading.value = false;
-}
-
-watchEffect(() => {
-    if (file.value) readFile(file.value);
-});
-function readFile(file) {
-    const reader = new FileReader();
-
-    if (file.type === 'text/plain') {
-        reader.readAsText(file);
+const nextStep = () => {
+    if (activeStep.value < 5) {
+        activeStep.value++
     }
-    reader.onload = (event) => {
-        fileContent.value = event.target.result;
-    };
-    reader.onerror = () => {
-        fileContent.value = 'Ошибка при чтении файла';
-    };
+};
+const prevStep = () => {
+    if (activeStep.value > 1) {
+        activeStep.value--
+    }
+};
+const isNextDisabled = computed(() => {
+    switch (activeStep.value) {
+        case 1:
+            return !file.value;
+        case 2:
+            return !file.value;
+        case 3:
+            return !(file.value && selectedTemplate.value);
+        case 4:
+            return !(file.value && selectedTemplate.value);
+        case 5:
+            return !(file.value && selectedTemplate.value);
+        default:
+            return false;
+    }
+});
+function templateSelection(template) {
+    selectedTemplate.value = template;
 }
-
-function onFileChange() {
-    qrCodes.value = [];
-    activeAction.value = 'preview';
+function onFileChange(newFile) {
+    file.value = newFile;
+    if (file.value) activeStep.value = 2;
 }
-
-function printQRCode() {
-    const qrRenderer = document.querySelector('.qr-renderer');
-    const printWindow = window.open('', '_blank');
-
-    const styles = Array.from(document.styleSheets)
-        .map((sheet) => {
-            try {
-                return Array.from(sheet.cssRules)
-                    .map((rule) => rule.cssText)
-                    .join('');
-            } catch (e) {
-                console.warn('Cannot access stylesheet:', sheet, e);
-                return '';
-            }
-        })
-        .join('');
-
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Печать QR-кодов</title>
-            <style>${styles}</style>
-        </head>
-        <body>
-            ${qrRenderer.innerHTML}
-        </body>
-        </html>
-    `);
-
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-
-    printWindow.onafterprint = () => {
-        printWindow.close();
+const getDividerClass = (step) => {
+    return {
+        'border-[1.5px] transition-all duration-300 ease-in-out': true,
+        'border-teal-600': step < activeStep.value,
+        'border-gray-300': step >= activeStep.value,
     };
-}
+};
 </script>
 
 <style scoped>
-.preview-container {
-    position: relative;
-    width: 100%;
-    max-width: 794px;
-    height: calc(794px * 297 / 210);
-    border: 1px solid #4fd1c5;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: white;
-    box-sizing: border-box;
-    transform-origin: top left;
-}
-.a4-sheet {
-    padding: 28px 28px;
-    gap: calc(5px * (794 / 210));
-    box-sizing: border-box;
-}
-.slider-right ::v-deep(.v-tab__slider) {
-    right: 0 !important;
-    left: auto;
-    width: 5px;
-}
 </style>
