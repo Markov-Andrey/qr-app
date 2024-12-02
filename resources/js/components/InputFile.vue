@@ -18,24 +18,28 @@
     </v-container>
 </template>
 
-<script>
-export default {
-    name: "InputFile",
-    props: {
-        fileTypes: {
-            type: Array,
-            required: true,
-        },
+<script setup>
+import { ref, defineProps, defineEmits, watch } from 'vue';
+
+const props = defineProps({
+    fileTypes: {
+        type: Array,
+        required: true,
     },
-    data() {
-        return {
-            file: null,
-        };
+    modelValue: {
+        type: [File, null],
+        default: null,
     },
-    methods: {
-        onFileChange(newFile) {
-            this.$emit('update:modelValue', newFile);
-        },
-    },
+});
+
+const emit = defineEmits();
+const file = ref(props.modelValue);
+
+watch(() => props.modelValue, (newFile) => {
+    file.value = newFile;
+});
+
+const onFileChange = (newFile) => {
+    emit('update:modelValue', newFile);
 };
 </script>

@@ -33,27 +33,42 @@
                     </v-card>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="3">
-                    <TemplateComponent @template="templateSelection" />
+                    <TemplateComponent v-model="selectedTemplate" />
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="4">
                     <QRCodeRenderer :file="file"/>
                 </v-stepper-window-item>
             </v-stepper-window>
 
-            <v-stepper-actions
-                :next-text="'Далее'"
-                :prev-text="'Назад'"
-                @click:next="nextStep"
-                @click:prev="prevStep"
-            >
+            <v-stepper-actions>
                 <template #prev="{ props }">
-                    <v-btn prepend-icon="mdi-chevron-left-circle" color="orange" @click="props.onClick" :disabled="activeStep === 1">
+                    <v-btn
+                        prepend-icon="mdi-chevron-left-circle"
+                        color="orange"
+                        @click="prevStep"
+                        :disabled="activeStep === 1"
+                    >
                         Назад
                     </v-btn>
                 </template>
                 <template #next="{ props }">
-                    <v-btn append-icon="mdi-chevron-right-circle" color="primary" @click="props.onClick" :disabled="isNextDisabled">
+                    <v-btn
+                        v-if="activeStep !== 4"
+                        append-icon="mdi-chevron-right-circle"
+                        color="primary"
+                        @click="nextStep"
+                        :disabled="isNextDisabled"
+                    >
                         Далее
+                    </v-btn>
+                    <v-btn
+                        v-if="activeStep === 4"
+                        append-icon="mdi-refresh"
+                        color="primary"
+                        @click="restartStepper()"
+                        :disabled="isNextDisabled"
+                    >
+                        Начать заново
                     </v-btn>
                 </template>
             </v-stepper-actions>
@@ -91,14 +106,14 @@ const isNextDisabled = computed(() => {
             return !file.value;
         case 3:
             return !(file.value && selectedTemplate.value);
-        case 4:
-            return true;
         default:
             return false;
     }
 });
-function templateSelection(template) {
-    selectedTemplate.value = template;
+function restartStepper() {
+    activeStep.value = 1;
+    file.value = null;
+    selectedTemplate.value = null;
 }
 function onFileChange(newFile) {
     file.value = newFile;
