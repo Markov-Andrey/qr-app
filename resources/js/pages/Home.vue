@@ -14,11 +14,11 @@
                     <template v-slot:title>Шаблон</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(3)" />
-                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="4">
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 4" :value="4">
                     <template v-slot:title>На экран</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(4)" />
-                <v-stepper-item color="teal-darken-2" :complete="activeStep > 3" :value="5">
+                <v-stepper-item color="teal-darken-2" :complete="activeStep > 5" :value="5">
                     <template v-slot:title>Скачать</template>
                 </v-stepper-item>
             </v-stepper-header>
@@ -106,7 +106,7 @@ const isNextDisabled = computed(() => {
         case 4:
             return !(file.value && selectedTemplate.value);
         case 5:
-            return !(file.value && selectedTemplate.value);
+            return true;
         default:
             return false;
     }
