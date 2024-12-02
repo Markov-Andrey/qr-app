@@ -40,10 +40,7 @@
                     <TemplateComponent @template="templateSelection" />
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="4">
-                    <v-card flat>
-                        <v-card-title>На экран</v-card-title>
-                        <v-card-text>Контент для вывода на экран.</v-card-text>
-                    </v-card>
+                    <QRCodeRenderer :file="file"/>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="5">
                     <v-card flat>
@@ -79,6 +76,7 @@ import {computed, ref} from 'vue';
 import InputFile from "../components/InputFile.vue";
 import PreviewComponent from "../components/PreviewComponent.vue";
 import TemplateComponent from "../components/TemplateComponent.vue";
+import QRCodeRenderer from "@/components/QRCodeRenderer.vue";
 
 const fileTypes = ref(['.txt']);
 const activeStep = ref(1);

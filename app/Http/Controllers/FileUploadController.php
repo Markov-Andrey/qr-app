@@ -9,33 +9,32 @@ class FileUploadController extends Controller
 {
     public function upload(Request $request): \Illuminate\Http\JsonResponse
     {
-        if (!$request->hasFile('file') || !$request->file('file')->isValid()) {
-            return response()->json(['message' => 'Invalid or missing file'], 400);
+        $codes = $request->input('codes', []);
+        if (empty($codes)) {
+            return response()->json(['message' => 'No codes provided'], 400);
         }
-        $content = file($request->file('file')->getRealPath(), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $svgFiles = $this->generateTestSvg();
+        $base64Codes = array_map('base64_encode', $codes);
+        $svgFiles = $this->generateTestSvg($base64Codes);
+        $decodedSvgFiles = array_map('base64_decode', $svgFiles);
 
-        return response()->json(array_filter($svgFiles));
+        return response()->json(array_filter($decodedSvgFiles));
     }
-
     /**
      * Статичное API
+     * @param $base64Codes
      * @return array|null
      */
-    public function generateSvg(): ?array
+    public function generateSvg($base64Codes): ?array
     {
         $apiUrl = 'http://192.168.1.11/api/gs';
         try {
-//            $response = Http::get($apiUrl);
-            $response = Http::get($apiUrl);
+            $response = Http::get($apiUrl, [
+                'codes' => $base64Codes
+            ]);
+
             if ($response->successful()) {
                 $responseData = $response->json();
-                if (isset($responseData['data']) && is_array($responseData['data'])) {
-                    $decodedData = array_map(function ($item) {
-                        return base64_decode($item, true) ?: null;
-                    }, $responseData['data']);
-                    return array_filter($decodedData);
-                }
+                return $responseData['data'] ?? null;
             }
         } catch (\Exception $e) {
             return null;
@@ -43,26 +42,14 @@ class FileUploadController extends Controller
 
         return null;
     }
-
-    /**
-     * Статичный метод для тестов!
-     * @return array|null
-     */
     public function generateTestSvg(): ?array
     {
         try {
             $response = self::staticResponse();
-            if (isset($response['data']) && is_array($response['data'])) {
-                $decodedData = array_map(function ($item) {
-                    return base64_decode($item, true) ?: null;
-                }, $response['data']);
-                return array_filter($decodedData);
-            }
+            return $response['data'] ?? null;
         } catch (\Exception $e) {
             return null;
         }
-
-        return null;
     }
     /**
      * Статичный ответ!

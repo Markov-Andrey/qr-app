@@ -8,7 +8,11 @@ class ApiService {
         return request(() => api().post(`/login`, data));
     }
     async uploadFile(data) {
-        return request(() => api().post(`api/upload/`, data));
+        return request(() => api().get('api/upload/', {
+            params: {
+                codes: data.codes
+            }
+        }));
     }
 }
 export const apiService = new ApiService();
