@@ -15,11 +15,7 @@
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(3)" />
                 <v-stepper-item color="teal-darken-2" :disabled="!file || !selectedTemplate" :complete="activeStep > 4" :value="4">
-                    <template v-slot:title>На экран</template>
-                </v-stepper-item>
-                <v-divider opacity="1" :class="getDividerClass(4)" />
-                <v-stepper-item color="teal-darken-2" :disabled="!file || !selectedTemplate" :complete="activeStep > 5" :value="5">
-                    <template v-slot:title>Скачать</template>
+                    <template v-slot:title>Результат</template>
                 </v-stepper-item>
             </v-stepper-header>
 
@@ -41,12 +37,6 @@
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="4">
                     <QRCodeRenderer :file="file"/>
-                </v-stepper-window-item>
-                <v-stepper-window-item :value="5">
-                    <v-card flat>
-                        <v-card-title>Скачать</v-card-title>
-                        <v-card-text>Контент для скачивания файла.</v-card-text>
-                    </v-card>
                 </v-stepper-window-item>
             </v-stepper-window>
 
@@ -76,7 +66,7 @@ import {computed, ref} from 'vue';
 import InputFile from "../components/InputFile.vue";
 import PreviewComponent from "../components/PreviewComponent.vue";
 import TemplateComponent from "../components/TemplateComponent.vue";
-import QRCodeRenderer from "@/components/QRCodeRenderer.vue";
+import QRCodeRenderer from "../components/QRCodeRenderer.vue";
 
 const fileTypes = ref(['.txt']);
 const activeStep = ref(1);
@@ -84,7 +74,7 @@ const file = ref(null);
 const selectedTemplate = ref(null);
 
 const nextStep = () => {
-    if (activeStep.value < 5) {
+    if (activeStep.value < 4) {
         activeStep.value++
     }
 };
@@ -102,8 +92,6 @@ const isNextDisabled = computed(() => {
         case 3:
             return !(file.value && selectedTemplate.value);
         case 4:
-            return !(file.value && selectedTemplate.value);
-        case 5:
             return true;
         default:
             return false;
