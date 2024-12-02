@@ -2,7 +2,7 @@
     <v-container>
         <v-stepper v-model="activeStep" alt-labels editable>
             <v-stepper-header>
-                <v-stepper-item color="teal-darken-2" :complete="file" :value="1">
+                <v-stepper-item color="teal-darken-2" :complete="!!file" :value="1">
                     <template v-slot:title>Загрузить файл</template>
                 </v-stepper-item>
                 <v-divider opacity="1" :class="getDividerClass(1)" />
