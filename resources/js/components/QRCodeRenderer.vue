@@ -61,7 +61,7 @@ import { apiService } from "../api/apiService.js";
 const props = defineProps({
     file: {
         type: File,
-        required: true,
+        default: null,
     },
 });
 
