@@ -5,7 +5,7 @@ class ApiService {
         this.withToken = true;
     }
     async login(data) {
-        return request(() => api().post(`/login`, data));
+        return request(() => api().post(`api/login`, data));
     }
     async uploadFile(data) {
         const params = { codes: data.codes };

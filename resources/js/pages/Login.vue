@@ -71,9 +71,11 @@ const passwordRules = [
 
 const fetchLogin = async () => {
     try {
-        const response = await apiService.login({ name: email.value, password: password.value });
-        if (response && response.token) {
-            localStorage.setItem('auth_token', response.token);
+        const response = await apiService.login({ email: email.value, password: password.value });
+        const data = response.data;
+        if (data && data.token) {
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('user', data.user);
             await router.push('/');
         } else {
             console.error('Invalid response: No token');

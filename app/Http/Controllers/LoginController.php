@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
@@ -35,8 +36,33 @@ class LoginController extends Controller
             'user' => $user
         ], 201);
     }
-    public function login()
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string|min:3',
+        ]);
+        if ($validator->fails()) {
+            return Response::json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Неверный email или пароль',
+            ], 401);
+        }
+        $user = Auth::user();
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return Response::json([
+            'success' => true,
+            'message' => 'Успешный вход',
+            'token' => $token,
+            'user' => $user->name,
+        ], 200);
     }
 }
