@@ -8,11 +8,11 @@ class ApiService {
         return request(() => api().post(`/login`, data));
     }
     async uploadFile(data) {
-        return request(() => api().get('api/upload/', {
-            params: {
-                codes: data.codes
-            }
-        }));
+        const params = { codes: data.codes };
+        return request(() => api().get('api/upload/', { params }));
+    }
+    async register(data) {
+        return request(() => api().post('api/signup/', data));
     }
 }
 export const apiService = new ApiService();

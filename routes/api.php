@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/upload', [FileUploadController::class, 'upload']);
+
+Route::post('/signup', [LoginController::class, 'signup']);
+Route::post('/login', [LoginController::class, 'login']);

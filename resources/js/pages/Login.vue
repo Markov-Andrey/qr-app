@@ -1,12 +1,16 @@
 <template>
     <div class="flex items-center justify-center w-full h-screen bg-gray-200">
-        <v-card class="p-6 w-full max-w-md rounded-lg border-2 border-b-gray-300 border-transparent
-            hover:outline hover:outline-2 hover:outline-green-500
-            hover:shadow-[0_5px_0_0_#10b981]
-            transition-all duration-300 ease-in-out"
+        <v-card class="p-6 w-full max-w-md rounded-lg border-2 border-transparent
+                shadow-[1px_5px_1px_1px_#0d9488]
+                transition-all duration-300 ease-in-out"
         >
-            <v-card-title class="text-center text-h6 text-md-h5 text-lg-h4">Логин</v-card-title>
-
+            <v-card-title class="text-center text-white bg-teal-600 mb-4 rounded-lg py-3">
+                <div class="flex gap-2 justify-center">
+                    <QrLogo class="flex w-5 h-5" />
+                    <span class="text-xl font-bold">{{ appName }}</span>
+                </div>
+                <div>Логин</div>
+            </v-card-title>
             <v-card-text>
                 <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field
@@ -18,7 +22,6 @@
                         outlined
                         class="mb-4 email-field"
                     />
-
                     <v-text-field
                         v-model="password"
                         label="Password"
@@ -30,7 +33,6 @@
                     />
                 </v-form>
             </v-card-text>
-
             <v-card-actions>
                 <v-spacer />
                 <v-btn
@@ -50,11 +52,13 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { apiService } from '../api/apiService.js';
+import QrLogo from "../components/QrLogo.vue";
 
 const email = ref('');
 const password = ref('');
 const valid = ref(false);
 const router = useRouter();
+const appName = import.meta.env.VITE_APP_NAME || '';
 
 const emailRules = [
     (v) => !!v || 'Email is required',

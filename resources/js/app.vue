@@ -1,6 +1,7 @@
 <template>
     <v-app>
         <Header
+            v-if="!isHiddenRoute"
             :menuItems="menuItems"
             :modelValue="activeTab"
             @update:modelValue="handleTabChange"
@@ -13,56 +14,34 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Header from './components/Header.vue';
 
 export default {
     name: 'App',
-    components: {
-        Header,
-    },
+    components: { Header },
     setup() {
         const route = useRoute();
         const router = useRouter();
-
-        // Меню с роутами
-        const menuItems = ref([
+        const menuItems = [
             { label: 'Шаблон 1', to: '/' },
             { label: 'Шаблон 2', to: '/template2' },
             { label: 'Шаблон 3', to: '/template3' },
-        ]);
+        ];
 
-        // Определение активного таба
-        const activeTab = ref(
-            menuItems.value.findIndex(item => item.to === route.path)
+        const hiddenRoutes = ['/login', '/signup'];
+        const isHiddenRoute = computed(() => hiddenRoutes.includes(route.path));
+        const activeTab = computed(() =>
+            menuItems.findIndex(item => item.to === route.path)
         );
 
-        // Следим за изменением маршрута
-        watch(
-            () => route.path,
-            (newPath) => {
-                activeTab.value = menuItems.value.findIndex(
-                    item => item.to === newPath
-                );
-            }
-        );
-
-        // Обработка навигации
-        const handleNavigation = (path) => {
-            router.push(path);
-        };
-
-        // Обработка изменения активного таба
+        const handleNavigation = (path) => router.push(path);
         const handleTabChange = (newTabIndex) => {
-            activeTab.value = newTabIndex;
+            if (menuItems[newTabIndex]) router.push(menuItems[newTabIndex].to);
         };
-        return {
-            menuItems,
-            activeTab,
-            handleNavigation,
-            handleTabChange,
-        };
+
+        return { menuItems, activeTab, isHiddenRoute, handleNavigation, handleTabChange };
     },
 };
 </script>
