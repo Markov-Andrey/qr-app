@@ -13,7 +13,7 @@
             </v-card-title>
 
             <v-card-text>
-                <v-form ref="form" v-model="valid" lazy-validation>
+                <v-form ref="form" v-model="valid" lazy-validation @keydown.enter="handleEnterKey">
                     <v-text-field
                         v-model="name"
                         variant="outlined"
@@ -135,6 +135,11 @@ const register = async () => {
     } catch (error) {
         console.error('Ошибка при регистрации:', error);
         alert('Произошла ошибка. Попробуйте снова.');
+    }
+};
+const handleEnterKey = () => {
+    if (valid.value) {
+        register();
     }
 };
 </script>

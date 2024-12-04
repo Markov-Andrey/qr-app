@@ -12,7 +12,7 @@
                 <div>Логин</div>
             </v-card-title>
             <v-card-text>
-                <v-form ref="form" v-model="valid" lazy-validation>
+                <v-form ref="form" v-model="valid" lazy-validation @keydown.enter="handleEnterKey">
                     <v-text-field
                         v-model="email"
                         label="Email"
@@ -34,6 +34,14 @@
                 </v-form>
             </v-card-text>
             <v-card-actions>
+                <router-link to="/forgot">
+                    <v-btn
+                        color="orange"
+                        variant="tonal"
+                    >
+                        Забыл пароль
+                    </v-btn>
+                </router-link>
                 <v-spacer />
                 <v-btn
                     :disabled="!valid"
@@ -45,6 +53,15 @@
                 </v-btn>
             </v-card-actions>
         </v-card>
+        <v-snackbar
+            v-model="snackbar"
+            timeout="3000"
+            color="red lighten-1"
+            outlined
+            class="text-white mb-12"
+        >
+            {{ errorMessage }}
+        </v-snackbar>
     </div>
 </template>
 
@@ -57,30 +74,43 @@ import QrLogo from "../components/QrLogo.vue";
 const email = ref('');
 const password = ref('');
 const valid = ref(false);
+const errorMessage = ref('');
+const snackbar = ref(false);
 const router = useRouter();
 const appName = import.meta.env.VITE_APP_NAME || '';
 
 const emailRules = [
-    (v) => !!v || 'Email is required',
-    (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+    (v) => !!v || 'Обязательное поле',
+    (v) => /.+@.+\..+/.test(v) || 'Не валидный E-mail',
 ];
 const passwordRules = [
-    (v) => !!v || 'Password is required',
-    (v) => v.length >= 3 || 'Password must be at least 3 characters long',
+    (v) => !!v || 'Обязательное поле',
 ];
 
 const fetchLogin = async () => {
-    const response = await apiService.login({ email: email.value, password: password.value });
-    const data = response.data;
-    if (data && data.token) {
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        await router.push('/');
-    } else {
-        console.error('Invalid response: No token');
+    errorMessage.value = '';
+    try {
+        const response = await apiService.login({ email: email.value, password: password.value });
+        const data = response.data;
+        if (data && data.token) {
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            await router.push('/');
+        } else {
+            throw new Error('Unexpected response');
+        }
+    } catch (error) {
+        errorMessage.value = error.response?.data?.message || 'Неверный email или пароль';
+        snackbar.value = true;
+        email.value = '';
+        password.value = '';
     }
-    email.value = '';
-    password.value = '';
+};
+
+const handleEnterKey = () => {
+    if (valid.value) {
+        fetchLogin();
+    }
 };
 
 onMounted(() => {
