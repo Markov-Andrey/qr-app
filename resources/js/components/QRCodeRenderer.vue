@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-import {ref, watch, defineEmits} from 'vue';
+import {ref, watch} from 'vue';
 import { apiService } from "../api/apiService.js";
 
 const props = defineProps({
@@ -75,7 +75,6 @@ const items = ref([
     { text: '50x50', value: [5, 5] },
 ]);
 const selectedSize = ref(items.value[0]);
-const emit = defineEmits();
 
 function selectSize(item) {
     selectedSize.value = item;
@@ -100,7 +99,6 @@ function checkAttempts() {
     let attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
     attempts += 1;
     localStorage.setItem('processingAttempts', attempts.toString());
-    emit('attempts-updated');
 }
 function printQRCode() {
     const qrRenderer = document.querySelector('#qr-renderer');

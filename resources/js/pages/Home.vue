@@ -10,6 +10,7 @@
             </v-card-subtitle>
         </v-card>
     </v-container>
+
     <v-container v-else>
         <v-stepper v-model="activeStep" alt-labels editable>
             <v-stepper-header>
@@ -55,7 +56,7 @@
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="2"><v-card flat><PreviewComponent :file="file" /></v-card></v-stepper-window-item>
                 <v-stepper-window-item :value="3"><TemplateComponent v-model="selectedTemplate" /></v-stepper-window-item>
-                <v-stepper-window-item v-if="file && selectedTemplate" :value="4"><QRCodeRenderer @attempts-updated="handleAttemptsUpdated" :file="file" /></v-stepper-window-item>
+                <v-stepper-window-item v-if="file && selectedTemplate" :value="4"><QRCodeRenderer :file="file" /></v-stepper-window-item>
             </v-stepper-window>
 
             <v-stepper-actions>
@@ -72,7 +73,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import InputFile from "../components/InputFile.vue";
 import PreviewComponent from "../components/PreviewComponent.vue";
 import TemplateComponent from "../components/TemplateComponent.vue";
@@ -91,14 +92,12 @@ const isNextDisabled = computed(() => {
         default: return false;
     }
 });
+
 onMounted(() => {
     resetProcessingAttemptsAtMidnight();
-    handleAttemptsUpdated();
+    restartStepper();
 });
-function handleAttemptsUpdated() {
-    const attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
-    blocked.value = attempts >= 3;
-}
+
 function resetProcessingAttemptsAtMidnight() {
     const lastResetDate = localStorage.getItem('reset');
     const currentDate = new Date().toLocaleDateString();
@@ -107,7 +106,12 @@ function resetProcessingAttemptsAtMidnight() {
         localStorage.setItem('reset', currentDate);
     }
 }
+
 const restartStepper = () => {
+    const attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
+    if (attempts >= 3) {
+        blocked.value = true;
+    }
     activeStep.value = 1;
     file.value = null;
     selectedTemplate.value = null;
