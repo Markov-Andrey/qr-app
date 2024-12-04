@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\MoonShine\Resources\UserResource;
 use MoonShine\Providers\MoonShineApplicationServiceProvider;
 use MoonShine\MoonShine;
 use MoonShine\Menu\MenuGroup;
@@ -49,10 +50,11 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                     new MoonShineUserRoleResource()
                 ),
             ]),
-
-            MenuItem::make('Documentation', 'https://moonshine-laravel.com/docs')
-                ->badge(fn() => 'Check')
-                ->blank(),
+            MenuItem::make(
+                static fn() => 'Пользователи',
+                new UserResource(),
+                'heroicons.users'
+            ),
         ];
     }
 
@@ -61,6 +63,11 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
      */
     protected function theme(): array
     {
-        return [];
+        return [
+            'colors' => [
+                'primary' => '#00897B',
+                'secondary' => '#4DB6AC',
+            ],
+        ];
     }
 }
