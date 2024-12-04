@@ -4,7 +4,7 @@
             <v-row align="center" justify="space-between">
                 <v-col cols="auto" class="flex gap-2 items-center justify-center">
                     <QrLogo class="flex w-5 h-5 text-white" />
-                    <span class="text-xl font-bold">QR-Gen</span>
+                    <span class="text-xl font-bold">{{ appName }}</span>
                 </v-col>
                 <v-col v-if="!user" cols="auto" class="flex gap-4">
                     <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/login' }">Войти</v-btn>
@@ -53,6 +53,7 @@ import {defineProps, onMounted, ref} from 'vue';
 import QrLogo from "../components/QrLogo.vue";
 
 const user = ref(null);
+const appName = import.meta.env.VITE_APP_NAME || '';
 const props = defineProps({
     menuItems: {
         type: Array,
@@ -80,10 +81,10 @@ onMounted(() => {
 
 <style scoped>
 .v-list-item .v-icon {
-    opacity: 0.8 !important;
+    opacity: 0.8;
     transition: opacity 0.2s ease;
 }
 .v-list-item:hover .v-icon {
-    opacity: 1 !important;
+    opacity: 1;
 }
 </style>
