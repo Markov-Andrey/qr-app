@@ -97,7 +97,7 @@ onMounted(() => {
 });
 function handleAttemptsUpdated() {
     const attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
-    blocked.value = attempts >= 5;
+    blocked.value = attempts >= 3;
 }
 function resetProcessingAttemptsAtMidnight() {
     const lastResetDate = localStorage.getItem('reset');
