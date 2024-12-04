@@ -1,5 +1,16 @@
 <template>
-    <v-container>
+    <v-container v-if="blocked" class="text-center my-4">
+        <v-card variant="text" class="pa-4" outlined>
+            <v-card-title class="headline flex justify-center gap-2">
+                <v-icon left>mdi-lock</v-icon>
+                <div>Лимит обработанных файлов достигнут</div>
+            </v-card-title>
+            <v-card-subtitle>
+                Пожалуйста, попробуйте снова завтра. Мы ценим вашу активность!
+            </v-card-subtitle>
+        </v-card>
+    </v-container>
+    <v-container v-else>
         <v-stepper v-model="activeStep" alt-labels editable>
             <v-stepper-header>
                 <v-stepper-item
@@ -44,7 +55,7 @@
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="2"><v-card flat><PreviewComponent :file="file" /></v-card></v-stepper-window-item>
                 <v-stepper-window-item :value="3"><TemplateComponent v-model="selectedTemplate" /></v-stepper-window-item>
-                <v-stepper-window-item :value="4"><QRCodeRenderer :file="file" /></v-stepper-window-item>
+                <v-stepper-window-item v-if="file && selectedTemplate" :value="4"><QRCodeRenderer @attempts-updated="handleAttemptsUpdated" :file="file" /></v-stepper-window-item>
             </v-stepper-window>
 
             <v-stepper-actions>
@@ -61,7 +72,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import InputFile from "../components/InputFile.vue";
 import PreviewComponent from "../components/PreviewComponent.vue";
 import TemplateComponent from "../components/TemplateComponent.vue";
@@ -71,6 +82,7 @@ const fileTypes = ref(['.txt']);
 const activeStep = ref(1);
 const file = ref(null);
 const selectedTemplate = ref(null);
+const blocked = ref(false);
 
 const isNextDisabled = computed(() => {
     switch (activeStep.value) {
@@ -79,7 +91,22 @@ const isNextDisabled = computed(() => {
         default: return false;
     }
 });
-
+onMounted(() => {
+    resetProcessingAttemptsAtMidnight();
+    handleAttemptsUpdated();
+});
+function handleAttemptsUpdated() {
+    const attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
+    blocked.value = attempts >= 5;
+}
+function resetProcessingAttemptsAtMidnight() {
+    const lastResetDate = localStorage.getItem('reset');
+    const currentDate = new Date().toLocaleDateString();
+    if (lastResetDate !== currentDate) {
+        localStorage.removeItem('processingAttempts');
+        localStorage.setItem('reset', currentDate);
+    }
+}
 const restartStepper = () => {
     activeStep.value = 1;
     file.value = null;
