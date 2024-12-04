@@ -32,7 +32,6 @@ class UserResource extends ModelResource
         return [
             Block::make([
                 ID::make()->sortable(),
-                ID::make()->sortable(),
                 Text::make('Имя пользователя', 'name'),
                 Text::make('Email', 'email'),
                 Date::make('Email проверен', 'email_verified_at')->format('d.m.Y'),
