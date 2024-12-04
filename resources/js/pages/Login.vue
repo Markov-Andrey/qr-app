@@ -70,18 +70,14 @@ const passwordRules = [
 ];
 
 const fetchLogin = async () => {
-    try {
-        const response = await apiService.login({ email: email.value, password: password.value });
-        const data = response.data;
-        if (data && data.token) {
-            localStorage.setItem('auth_token', data.token);
-            localStorage.setItem('user', data.user);
-            await router.push('/');
-        } else {
-            console.error('Invalid response: No token');
-        }
-    } catch (error) {
-        console.error('Login failed', error);
+    const response = await apiService.login({ email: email.value, password: password.value });
+    const data = response.data;
+    if (data && data.token) {
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        await router.push('/');
+    } else {
+        console.error('Invalid response: No token');
     }
     email.value = '';
     password.value = '';

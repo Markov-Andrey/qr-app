@@ -57,12 +57,16 @@ class LoginController extends Controller
         $user = Auth::user();
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $info = [
+            'name' => $user->name,
+            'email' => $user->email,
+        ];
 
         return Response::json([
             'success' => true,
             'message' => 'Успешный вход',
             'token' => $token,
-            'user' => $user->name,
+            'user' => $info,
         ], 200);
     }
 }
