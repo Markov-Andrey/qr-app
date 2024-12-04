@@ -3,8 +3,10 @@
         <v-container>
             <v-row align="center" justify="space-between">
                 <v-col cols="auto" class="flex gap-2 items-center justify-center">
-                    <QrLogo class="flex w-5 h-5 text-white" />
-                    <span class="text-xl font-bold">{{ appName }}</span>
+                    <router-link :to="{ path: '/' }" class="d-flex align-center transition-all hover:text-orange-300">
+                        <QrLogo class="flex w-5 h-5" />
+                        <span class="text-xl font-bold ml-2">{{ appName }}</span>
+                    </router-link>
                 </v-col>
                 <v-col v-if="!user" cols="auto" class="flex gap-4">
                     <v-btn variant="tonal" class="font-bold shadow-md" :to="{ path: '/login' }">Войти</v-btn>
