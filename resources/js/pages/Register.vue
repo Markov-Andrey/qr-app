@@ -80,6 +80,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { apiService } from '../api/apiService.js';
 import QrLogo from "../components/QrLogo.vue";
+import store from "../store/index.js";
 
 const appName = import.meta.env.VITE_APP_NAME || '';
 const router = useRouter();
@@ -116,7 +117,10 @@ const toggleConfirmPassword = () => {
 };
 const register = async () => {
     if (password.value !== confirmPassword.value) {
-        alert('Пароли не совпадают');
+        await store.dispatch('snackbar/triggerSnackbar', {
+            message: 'Пароли не совпадают',
+            type: 'error',
+        });
         return;
     }
 
@@ -133,8 +137,10 @@ const register = async () => {
             await router.push('/login');
         }
     } catch (error) {
-        console.error('Ошибка при регистрации:', error);
-        alert('Произошла ошибка. Попробуйте снова.');
+        await store.dispatch('snackbar/triggerSnackbar', {
+            message: 'Произошла ошибка. Попробуйте снова.',
+            type: 'error',
+        });
     }
 };
 const handleEnterKey = () => {

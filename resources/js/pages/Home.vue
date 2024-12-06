@@ -107,6 +107,7 @@ function resetProcessingAttemptsAtMidnight() {
     }
 }
 
+// TODO блок на запросы в течение суток
 const restartStepper = () => {
     const attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
     if (attempts >= 3) {

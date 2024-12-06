@@ -19,7 +19,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/upload', [FileUploadController::class, 'upload']);
+
+Route::middleware('throttle:limit')->group(function () {
+    Route::get('/upload', [FileUploadController::class, 'upload']);
+});
 
 Route::post('/signup', [LoginController::class, 'signup']);
 Route::post('/login', [LoginController::class, 'login']);

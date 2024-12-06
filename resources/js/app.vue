@@ -10,6 +10,7 @@
         <v-main>
             <router-view />
         </v-main>
+        <SnackbarComponent />
     </v-app>
 </template>
 
@@ -17,10 +18,11 @@
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Header from './components/Header.vue';
+import SnackbarComponent from "./components/SnackbarComponent.vue";
 
 export default {
     name: 'App',
-    components: { Header },
+    components: {SnackbarComponent, Header },
     setup() {
         const route = useRoute();
         const router = useRouter();

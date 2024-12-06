@@ -53,15 +53,6 @@
                 </v-btn>
             </v-card-actions>
         </v-card>
-        <v-snackbar
-            v-model="snackbar"
-            timeout="3000"
-            color="red lighten-1"
-            outlined
-            class="text-white mb-12"
-        >
-            {{ errorMessage }}
-        </v-snackbar>
     </div>
 </template>
 
@@ -70,12 +61,11 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { apiService } from '../api/apiService.js';
 import QrLogo from "../components/QrLogo.vue";
+import store from "../store/index.js";
 
 const email = ref('');
 const password = ref('');
 const valid = ref(false);
-const errorMessage = ref('');
-const snackbar = ref(false);
 const router = useRouter();
 const appName = import.meta.env.VITE_APP_NAME || '';
 
@@ -88,7 +78,6 @@ const passwordRules = [
 ];
 
 const fetchLogin = async () => {
-    errorMessage.value = '';
     try {
         const response = await apiService.login({ email: email.value, password: password.value });
         const data = response.data;
@@ -100,8 +89,10 @@ const fetchLogin = async () => {
             throw new Error('Unexpected response');
         }
     } catch (error) {
-        errorMessage.value = error.response?.data?.message || 'Неверный email или пароль';
-        snackbar.value = true;
+        await store.dispatch('snackbar/triggerSnackbar', {
+            message: error.response?.data?.message || 'Неверный email или пароль',
+            type: 'error',
+        });
         email.value = '';
         password.value = '';
     }
