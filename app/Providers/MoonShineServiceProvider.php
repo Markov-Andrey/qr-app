@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\MoonShine\Resources\UserActionResource;
 use App\MoonShine\Resources\UserResource;
 use MoonShine\Providers\MoonShineApplicationServiceProvider;
 use MoonShine\MoonShine;
@@ -54,6 +55,11 @@ class MoonShineServiceProvider extends MoonShineApplicationServiceProvider
                 static fn() => 'Пользователи',
                 new UserResource(),
                 'heroicons.users'
+            ),
+            MenuItem::make(
+                static fn() => 'История запросов',
+                new UserActionResource(),
+                'heroicons.bars-arrow-down'
             ),
         ];
     }

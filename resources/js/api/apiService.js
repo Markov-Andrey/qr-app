@@ -9,7 +9,7 @@ class ApiService {
     }
     async uploadFile(data) {
         const params = { codes: data.codes };
-        return request(() => api().get('api/upload/', { params }));
+        return request(() => api(this.withToken).get('api/upload/', { params }));
     }
     async register(data) {
         return request(() => api().post('api/signup/', data));

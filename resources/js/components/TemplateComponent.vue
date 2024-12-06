@@ -9,10 +9,10 @@
                 class="m-2 cursor-pointer transition-all duration-300 ease-in-out rounded-lg relative"
                 @click="selectTemplate(template)"
                 :class="{
-          'shadow-lg ring-2 ring-green-600': selectedTemplate === template,
-          'scale-105': selectedTemplate === template,
-          'hover:ring-2 hover:ring-orange-600': selectedTemplate !== template
-        }"
+                    'shadow-lg ring-2 ring-green-600': selectedTemplate === template,
+                    'scale-105': selectedTemplate === template,
+                    'hover:ring-2 hover:ring-orange-600': selectedTemplate !== template
+                }"
                 aspect-ratio="1.5"
             >
                 <v-icon

@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class FileUploadController extends Controller
 {
     public function upload(Request $request): \Illuminate\Http\JsonResponse
     {
+        $user = PersonalAccessToken::findToken($request->bearerToken())?->tokenable;
+
         $codes = $request->input('codes', []);
         if (empty($codes)) {
             return response()->json(['message' => 'No codes provided'], 400);
@@ -16,6 +20,12 @@ class FileUploadController extends Controller
         $base64Codes = array_map('base64_encode', $codes);
         $svgFiles = $this->generateTestSvg($base64Codes);
         $decodedSvgFiles = array_map('base64_decode', $svgFiles);
+
+        UserAction::create([
+            'user_id' => $user->id ?? null,
+            'ip_address' => $request->ip(),
+            'processed_data' => $codes,
+        ]);
 
         return response()->json(array_filter($decodedSvgFiles));
     }
