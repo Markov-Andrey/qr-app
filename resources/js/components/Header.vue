@@ -30,7 +30,7 @@
                         </template>
 
                         <v-list>
-                            <v-list-item disabled :to="{ path: '/profile' }">
+                            <v-list-item :to="{ path: '/profile' }">
                                 <template #prepend>
                                     <v-icon color="teal-darken-1">mdi-account-circle</v-icon>
                                 </template>
