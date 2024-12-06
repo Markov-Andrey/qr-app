@@ -18,7 +18,7 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/home';
-    public const LIMIT_ATTEMPT = 1;
+    public const LIMIT_ATTEMPT = 100;
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

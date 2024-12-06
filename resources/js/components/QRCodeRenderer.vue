@@ -36,10 +36,9 @@
         </div>
     </div>
     <div id="qr-renderer">
-        <div class="flex flex-wrap gap-4 relative min-h-36">
-            <div
-                v-if="loading"
-                class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-lg z-10"
+        <div class="flex flex-wrap gap-4 relative">
+            <div v-if="loading"
+                class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-lg z-10 min-h-36"
             >
                 <v-progress-circular
                     indeterminate
@@ -51,12 +50,16 @@
                 <div v-if="qr" v-html="qr" />
             </div>
         </div>
+        <div class="flex items-center justify-center min-h-36" v-if="errorStatus">
+            <v-btn prepend-icon="mdi-reload" class="m-2" @click="retryQRCodes">Обновить</v-btn>
+        </div>
     </div>
 </template>
 
 <script setup>
 import {ref, watch} from 'vue';
 import { apiService } from "../api/apiService.js";
+import store from "../store/index.js";
 
 const props = defineProps({
     file: {
@@ -67,6 +70,7 @@ const props = defineProps({
 
 const qrCodes = ref([]);
 const loading = ref(false);
+const errorStatus = ref(false);
 const items = ref([
     { text: '10x10', value: [1, 1] },
     { text: '20x20', value: [2, 2] },
@@ -89,11 +93,27 @@ async function generateQRCodes(fileContent) {
             qrCodes.value = response.data;
             checkAttempts();
         }
+        errorStatus.value = false;
     } catch (error) {
-        console.error("Ошибка при генерации QR-кодов:", error);
+        await store.dispatch('snackbar/triggerSnackbar', {
+            message: "Ошибка: " + error.response.data.message,
+            type: 'error',
+        });
+        errorStatus.value = true;
     } finally {
         loading.value = false;
     }
+}
+function retryQRCodes() {
+    const reader = new FileReader();
+    reader.onload = () => {
+        const content = reader.result;
+        generateQRCodes(content);
+    };
+    reader.onerror = () => {
+        console.error('Error reading file.');
+    };
+    reader.readAsText(props.file);
 }
 function checkAttempts() {
     let attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
