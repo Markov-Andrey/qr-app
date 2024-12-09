@@ -38,8 +38,8 @@ class UserActionResource extends ModelResource
                 BelongsTo::make('Пользователь', 'user', resource: new UserResource())->nullable(),
                 Text::make('IP', 'ip_address')->nullable(),
                 Json::make('Данные', 'processed_data')->onlyValue()->nullable()->hideOnIndex(),
-                Date::make('Создано', 'created_at')->format('d.m.Y'),
-                Date::make('Обновлено', 'updated_at')->format('d.m.Y'),
+                Date::make('Создано', 'created_at')->format('d.m.Y H:i:s'),
+                Date::make('Обновлено', 'updated_at')->format('d.m.Y H:i:s'),
             ]),
         ];
     }
