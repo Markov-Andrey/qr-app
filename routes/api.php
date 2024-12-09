@@ -28,3 +28,5 @@ Route::get('/history', [HistoryController::class, 'get']);
 
 Route::post('/signup', [LoginController::class, 'signup']);
 Route::post('/login', [LoginController::class, 'login']);
+Route::post('/reset-password', [LoginController::class, 'resetPassword']);
+Route::post('/update-password', [LoginController::class, 'updatePassword']);

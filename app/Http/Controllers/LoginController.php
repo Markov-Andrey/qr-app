@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -67,6 +70,77 @@ class LoginController extends Controller
             'message' => 'Успешный вход',
             'token' => $token,
             'user' => $info,
+        ], 200);
+    }
+    public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+        if ($validator->fails()) {
+            return Response::json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Пользователь с таким email не найден',
+            ], 404);
+        }
+        $token = Str::random(60);
+        DB::table('password_resets')->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'token' => Hash::make($token),
+                'created_at' => now(),
+            ]
+        );
+        Mail::send('emails.password_reset', ['token' => $token], function ($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Сброс пароля');
+        });
+
+        return Response::json([
+            'success' => true,
+            'message' => 'Ссылка для сброса пароля отправлена на ваш email',
+        ], 200);
+    }
+    public function updatePassword(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+        if ($validator->fails()) {
+            return Response::json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        $resetRequest = DB::table('password_resets')->where('token', $request->token)->first();
+        if (!$resetRequest || !Hash::check($request->token, $resetRequest->token)) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Токен недействителен или истёк',
+            ], 400);
+        }
+        $user = User::where('email', $resetRequest->email)->first();
+        if (!$user) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Пользователь не найден',
+            ], 404);
+        }
+        $user->password = Hash::make($request->password);
+        $user->save();
+        DB::table('password_resets')->where('email', $user->email)->delete();
+
+        return Response::json([
+            'success' => true,
+            'message' => 'Пароль успешно обновлён',
         ], 200);
     }
 }
