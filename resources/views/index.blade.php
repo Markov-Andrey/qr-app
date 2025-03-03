@@ -8,6 +8,6 @@
 </head>
 <body>
     <div id="app"></div>
-    @vite('resources/js/app.mjs')
+    @vite('resources/js/app.js')
 </body>
 </html>
