@@ -1,7 +1,7 @@
 // start.mjs
 
 (() => {
-    import('./resources/js/app.js')
+    import('./app.js')
         .then((module) => {
             console.log('Модуль загружен');
         })
