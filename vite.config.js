@@ -14,7 +14,7 @@ export default defineConfig({
         outDir: 'public/build',
         rollupOptions: {
             output: {
-                entryFileNames: 'app.js',
+                entryFileNames: 'app.cjs',
             },
             input: 'resources/js/app.js',
         },
