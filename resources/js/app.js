@@ -3,7 +3,7 @@ import vuetify from './vuetify.js';
 import router from './router/index.js';
 import App from './app.vue';
 import '../css/app.css';
-import store from './store';
+import store from './store/index.js';
 
 const app = createApp(App);
 
