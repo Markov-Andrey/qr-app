@@ -1,20 +1,25 @@
-var app;
+const express = require('express');
+const path = require('path');
 
-(async () => {
+const app = express();
+const PORT = 3000; // Можешь поменять на нужный порт
+
+app.use(express.static('public')); // Раздаём статику
+
+app.get('/', async (req, res) => {
     try {
-        // Попытка импортировать модуль через dynamic import
-        const { default: appModule } = await import('./public/build/app.js');
-        app = appModule;
+        const { default: appFunction } = await import(path.join(process.cwd(), 'public/build/app.js'));
 
-        // Проверка, если `app` - функция, вызываем её
-        if (typeof app === 'function') {
-            app();
+        if (typeof appFunction === 'function') {
+            appFunction(); // Вызываем, если это функция
         }
 
-        // Возвращаем HTML строку
-        return '<html><body><h1>HELLO!</h1></body></html>';
+        res.send('<html><body><h1>HELLO!</h1></body></html>');
     } catch (error) {
-        // Если ошибка, возвращаем HTML с сообщением об ошибке
-        return `<html><body><h1>Error: ${error.message}</h1></body></html>`;
+        res.send(`<html><body><h1>Error: ${error.message}</h1></body></html>`);
     }
-})();
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
