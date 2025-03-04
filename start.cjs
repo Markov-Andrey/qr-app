@@ -1,3 +1,4 @@
-const { createRequire } = require('module');
-const requireESM = createRequire(import.meta.url);
-const app = requireESM('./public/build/app.js');
+const { default: app } = await import('./public/build/app.js');
+if (typeof app === 'function') {
+    app();
+}
