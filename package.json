@@ -1,6 +1,6 @@
 {
     "private": true,
-    "type": "type",
+    "type": "commonjs",
     "scripts": {
         "dev": "vite",
         "build": "vite build"
