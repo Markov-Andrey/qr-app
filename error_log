@@ -1,0 +1,1 @@
+[10-Mar-2025 07:17:29 UTC] PHP Fatal error:  Cannot use Illuminate\Http\Request as Request because the name is already in use in /home/gs1datamar/public_html/qr-app/routes/api.php on line 9

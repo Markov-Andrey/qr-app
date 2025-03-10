@@ -5,6 +5,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Services\GS1DataMatrixTemplateService; 
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +31,31 @@ Route::post('/signup', [LoginController::class, 'signup']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/reset-password', [LoginController::class, 'resetPassword']);
 Route::post('/update-password', [LoginController::class, 'updatePassword']);
+
+
+Route::post('/get-svg', function (Request $request) {
+    $codes  = [
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM71',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM72',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM73',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM74',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM75',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM76',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM77',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM78',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM79',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM710',
+        '0100194502876031213RhOJV25E&rmk91KZF092uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM7CO5MBKijWebalThibHT0C8o=uLM711',
+    ];
+//    $codes = $request->input('codes');
+    if($codes == null){
+        return response()->json(['message' => 'Error', 'code' => '202']);
+    }
+    $dataGs1 = array();
+    foreach ($codes as $code){
+        $dataGs1[] =  base64_encode(GS1DataMatrixTemplateService::template1(base64_decode($code)));
+    }
+    return response()->json(['data' => $dataGs1]);
+});
