@@ -46,7 +46,7 @@
                     color="primary"
                 />
             </div>
-            <div v-for="(qr, index) in qrCodes" :key="index">
+            <div v-for="(qr, index) in qrCodes.data" :key="index">
                 <div v-if="qr" v-html="qr" />
             </div>
         </div>

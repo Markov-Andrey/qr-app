@@ -14,10 +14,8 @@ class ApiService {
         return request(() => api(this.withToken).get('api/history/'));
     }
     async uploadFile(data) {
-        const params = { codes: data.codes };
-        return request(() => api(this.withToken).get('api/upload/', { params }));
+        return request(() => api(this.withToken).post('api/get-svg/', { codes: data.codes }));
     }
-
     async resetPassword(data) {
         return request(() => api().post('api/reset-password/', data));
     }
