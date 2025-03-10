@@ -1,11 +1,11 @@
 <template>
     <div class="bg-gray-100 p-4 rounded-md max-h-96 overflow-y-auto">
-        <pre>{{ fileContent || 'Нет данных для отображения' }}</pre>
+        <pre>{{ formattedContent || 'Нет данных для отображения' }}</pre>
     </div>
 </template>
 
 <script setup>
-import {ref, watch} from 'vue';
+import {ref, watch, computed} from 'vue';
 
 const props = defineProps({
     file: {
@@ -24,6 +24,10 @@ watch(() => props.file, (newFile) => {
     }
 }, {immediate: true});
 
+const formattedContent = computed(() => {
+    return fileContent.value.replace(/\x1D/g, '<GS>');
+});
+
 function readFile(file) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -39,6 +43,3 @@ function readFile(file) {
     }
 }
 </script>
-
-<style scoped>
-</style>
