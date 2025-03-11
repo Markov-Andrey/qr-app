@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
-
 const request = async (requestFn) => {
     try {
         return await requestFn();
@@ -13,7 +11,7 @@ const request = async (requestFn) => {
 
 const api = (useToken = false) => {
     const instance = axios.create({
-        baseURL: API_BASE_URL,
+        baseURL: import.meta.env.VITE_API_URL,
     });
 
     instance.interceptors.request.use(
