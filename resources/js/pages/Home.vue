@@ -1,134 +1,67 @@
 <template>
-    <v-container v-if="blocked" class="text-center my-4">
-        <v-card variant="text" class="pa-4" outlined>
-            <v-card-title class="headline flex justify-center gap-2">
-                <v-icon left>mdi-lock</v-icon>
-                <div>Лимит обработанных файлов достигнут</div>
-            </v-card-title>
-            <v-card-subtitle>
-                Пожалуйста, попробуйте снова завтра. Мы ценим вашу активность!
-            </v-card-subtitle>
-        </v-card>
-    </v-container>
+    <div class="bg-gray-50 min-h-screen flex flex-col justify-center items-center py-10 px-6">
+        <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Генератор GS1 DataMatrix</h1>
+            <p class="text-lg text-gray-600 leading-relaxed mb-4">
+                Наш сервис позволяет быстро и удобно генерировать GS1 DataMatrix коды на основе шаблонов. Он предназначен для
+                профессионалов, которым нужно быстро обработать данные и подготовить их к печати или скачиванию.
+            </p>
+            <router-link
+                to="/form"
+                class="mt-8 inline-block bg-teal-600 text-white text-lg font-semibold py-3 px-6 rounded-lg transition hover:bg-teal-700"
+            >
+                Приступить
+            </router-link>
+        </div>
 
-    <v-container v-else>
-        <v-stepper v-model="activeStep" alt-labels editable>
-            <v-stepper-header>
-                <v-stepper-item
-                    color="teal-darken-2"
-                    :complete="!!file"
-                    :value="1"
-                >
-                    <template v-slot:title>Загрузить файл</template>
-                </v-stepper-item>
-                <v-divider opacity="1" :class="getDividerClass(1)" />
-                <v-stepper-item
-                    color="teal-darken-2"
-                    :disabled="!file"
-                    :complete="activeStep > 2"
-                    :value="2"
-                >
-                    <template v-slot:title>Предпросмотр</template>
-                </v-stepper-item>
-                <v-divider opacity="1" :class="getDividerClass(2)" />
-                <v-stepper-item
-                    color="teal-darken-2"
-                    :disabled="!file"
-                    :complete="activeStep > 3"
-                    :value="3"
-                >
-                    <template v-slot:title>Шаблон</template>
-                </v-stepper-item>
-                <v-divider opacity="1" :class="getDividerClass(3)" />
-                <v-stepper-item
-                    color="teal-darken-2"
-                    :disabled="!file || !selectedTemplate"
-                    :complete="activeStep > 4"
-                    :value="4"
-                >
-                    <template v-slot:title>Результат</template>
-                </v-stepper-item>
-            </v-stepper-header>
+        <div class="w-full max-w-3xl bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6">Пошаговая инструкция</h2>
 
-            <v-stepper-window>
-                <v-stepper-window-item :value="1">
-                    <InputFile :fileTypes="fileTypes" @update:modelValue="onFileChange" v-model="file" />
-                </v-stepper-window-item>
-                <v-stepper-window-item :value="2"><v-card flat><PreviewComponent :file="file" /></v-card></v-stepper-window-item>
-                <v-stepper-window-item :value="3"><TemplateComponent v-model="selectedTemplate" /></v-stepper-window-item>
-                <v-stepper-window-item v-if="file && selectedTemplate" :value="4"><QRCodeRenderer :file="file" /></v-stepper-window-item>
-            </v-stepper-window>
+            <div class="relative space-y-8">
+                <div
+                    v-for="(step, index) in steps"
+                    :key="index"
+                    class="relative bg-gray-100 rounded-lg p-6 shadow-md transition-all hover:bg-teal-500 group"
+                >
+                    <!-- Линия соединения между шагами -->
+                    <div v-if="index !== steps.length - 1" class="absolute left-1/2 top-full w-1 h-10 bg-gray-300"></div>
 
-            <v-stepper-actions>
-                <template #prev="{ props }">
-                    <v-btn prepend-icon="mdi-chevron-left-circle" color="orange" @click="activeStep--" :disabled="activeStep === 1">Назад</v-btn>
-                </template>
-                <template #next="{ props }">
-                    <v-btn v-if="activeStep !== 4" append-icon="mdi-chevron-right-circle" color="primary" @click="activeStep++" :disabled="isNextDisabled">Далее</v-btn>
-                    <v-btn v-if="activeStep === 4" append-icon="mdi-refresh" color="primary" @click="restartStepper" :disabled="isNextDisabled">Начать заново</v-btn>
-                </template>
-            </v-stepper-actions>
-        </v-stepper>
-    </v-container>
+                    <h3 class="text-2xl font-semibold text-gray-800 group-hover:text-white mb-2">
+                        {{ step.title }}
+                    </h3>
+                    <p class="text-gray-600 group-hover:text-white">
+                        {{ step.description }}
+                    </p>
+                </div>
+
+                <router-link
+                    to="/form"
+                    class="mt-8 inline-block bg-teal-600 text-white text-lg font-semibold py-3 px-6 rounded-lg transition hover:bg-teal-700"
+                >
+                    Приступить
+                </router-link>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
-import InputFile from "../components/InputFile.vue";
-import PreviewComponent from "../components/PreviewComponent.vue";
-import TemplateComponent from "../components/TemplateComponent.vue";
-import QRCodeRenderer from "../components/QRCodeRenderer.vue";
-
-const fileTypes = ref(['.txt']);
-const activeStep = ref(1);
-const file = ref(null);
-const selectedTemplate = ref(null);
-const blocked = ref(false);
-
-const isNextDisabled = computed(() => {
-    switch (activeStep.value) {
-        case 1: case 2: return !file.value;
-        case 3: return !selectedTemplate.value;
-        default: return false;
-    }
-});
-
-onMounted(() => {
-    resetProcessingAttemptsAtMidnight();
-    restartStepper();
-});
-
-function resetProcessingAttemptsAtMidnight() {
-    const lastResetDate = localStorage.getItem('reset');
-    const currentDate = new Date().toLocaleDateString();
-    if (lastResetDate !== currentDate) {
-        localStorage.removeItem('processingAttempts');
-        localStorage.setItem('reset', currentDate);
-    }
-}
-
-// TODO блок на запросы в течение суток
-const restartStepper = () => {
-    const attempts = parseInt(localStorage.getItem('processingAttempts') || '0', 10);
-    if (attempts >= 99999999999999999999999) {
-        blocked.value = true;
-    }
-    activeStep.value = 1;
-    file.value = null;
-    selectedTemplate.value = null;
-};
-
-const onFileChange = (newFile) => {
-    file.value = newFile;
-    if (file.value) activeStep.value = 2;
-};
-
-const getDividerClass = (step) => ({
-    'border-[1.5px] transition-all duration-300 ease-in-out': true,
-    'border-teal-600': step < activeStep.value,
-    'border-gray-300': step >= activeStep.value,
-});
+const steps = [
+    {
+        title: "Шаг I: Загрузка файла",
+        description: "Перетащите файл в область или нажмите, чтобы выбрать файл для загрузки.",
+    },
+    {
+        title: "Шаг II: Предпросмотр",
+        description: "Посмотрите на загруженные данные и убедитесь, что файл выбран правильно.",
+    },
+    {
+        title: "Шаг III: Выбор шаблона",
+        description: "Выберите шаблон, который будет использован для генерации DataMatrix кода.",
+    },
+    {
+        title: "Шаг IV: Результат",
+        description: "Подождите, пока файл обработается. Когда результат будет готов, вы сможете скачать или распечатать его.",
+    },
+];
 </script>
-
-<style scoped>
-</style>

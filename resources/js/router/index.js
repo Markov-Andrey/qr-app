@@ -7,12 +7,18 @@ import Register from "../pages/Register.vue";
 import Profile from "../pages/Profile.vue";
 import Forgot from "../pages/Forgot.vue";
 import ResetPassword from "../pages/ResetPassword.vue";
+import Form from "../pages/Form.vue";
 
 const routes = [
     {
         path: '/',
         name: 'Home',
         component: Home,
+    },
+    {
+        path: '/form',
+        name: 'Form',
+        component: Form,
     },
     {
         path: '/login',
