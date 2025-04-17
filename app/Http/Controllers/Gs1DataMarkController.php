@@ -13,7 +13,7 @@ class Gs1DataMarkController extends Controller
         if (!$codes || !is_array($codes)) {
             return response()->json(['message' => 'Error', 'code' => '202']);
         }
-        $dataGs1 = array_map(fn($code) => GS1DataMatrixTemplateService::template1(base64_decode($code)), $codes);
+        $dataGs1 = array_map(fn($code) => GS1DataMatrixTemplateService::template1($code), $codes);
 
         return response()->json(['data' => $dataGs1]);
     }
