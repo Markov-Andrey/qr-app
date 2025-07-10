@@ -212,7 +212,7 @@ class GS1DataMatrixService
         $svg .= ' viewBox="0 0 '.$width.' '.$height.'"><g>';
         $svg .= '<rect x="0" y="0"';
         $svg .= ' width="'.$width.'" height="'.$height.'"';
-        $svg .= 'stroke="'.$borderColor.'" stroke-width="2"';
+        $svg .= ' stroke="'.$borderColor.'" stroke-width="2"';
         $svg .= ' fill="white"/>';
         if (count($labels) > 0) {
             foreach ($labels as $label) {
